@@ -65,11 +65,11 @@ def close(request, pk):
 
 def comment(request, pk):
     if request.method == "POST":
+        ticket = Ticket.objects.get(pk=pk)
         if ticket.status == "CLOSED":
             messages.add_message(request, messages.WARNING, 'You tried commenting on a closed ticket.')
             return redirect('/tickets/details/{id}'.format(id = pk))
         else:
-            ticket = Ticket.objects.get(pk=pk)
             comment = Comment()
             comment.owner = request.user
             comment.ticket = ticket
