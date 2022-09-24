@@ -20,8 +20,18 @@ def details(request, pk):
             ticket = Ticket.objects.get(pk=pk)
             return render(request, 'tickets/details.html', {'ticket':ticket})
         return render(request, 'tickets/index.html')
+
+def close(request, pk):
     if request.method == "POST":
-        return redirect('/')
+        if request.user.is_authenticated:
+            ticket = Ticket.objects.get(pk=pk)
+            ticket.status = "CLOSED"
+            ticket.save()
+            messages.add_message(request, messages.SUCCESS, 'Success! Ticket #{id} has been closed.'.format(id = ticket.id))
+            return redirect('/')
+        else:
+            messages.add_message(request, messages.ERROR, 'You are not authenticated')
+            return redirect('/')
 
 def create(request):
     if request.method == "POST":

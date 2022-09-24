@@ -10,22 +10,24 @@
 </head>
 
 <body class="bg-dark">
-    <nav class="nav navbar bg-dark">
-        <div class="container-fluid">
-            <h1 class="navbar-brand text-light ml-4">Django Tickets</h1>
+    <nav class="nav navbar bg-black">
+        <div class="container-fluid d-flex">
+            <a href="/" class="navbar-brand text-light">Django Ticket Tracker</a>
             {% if not user.is_authenticated %}
-            <form class="d-flex" role="login" action="login/" method="post">
+            <form class="d-flex" role="login" action="{% url 'login' %}" method="post">
                 {% csrf_token %}
                 <input hidden id="username" name="username" value="guest"/>
                 <input hidden id="password" name="password" value="guestpassword123"/>
                 <button class="btn btn-success" type="submit">Login As Guest</button>
             </form>
             {% else %}
-            <h2 class="text-light">Welcome, {{ user.username }}</h2>
-            <form class="d-flex" role="login" action="logout/" method="post">
-                {% csrf_token %}
-                <button class="btn btn-danger" type="submit">Logout</button>
-            </form>
+            <div class="d-flex gap-4 align-items-center">
+                <h4 class="text-light float-right">Hello, {{ user.username }}</h4>
+                <form class="d-flex" role="logout" action="{% url 'logout' %}" method="post">
+                    {% csrf_token %}
+                    <button class="btn btn-danger" type="submit">Logout</button>
+                </form>
+            </div>
             {% endif %}
         </div>
     </nav>

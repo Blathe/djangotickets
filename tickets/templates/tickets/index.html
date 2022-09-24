@@ -12,21 +12,23 @@
 
 <body class="bg-dark">
     <nav class="nav navbar bg-black">
-        <div class="container-fluid">
-            <a href="/" class="navbar-brand text-light ml-4">Django Ticket Tracker</a>
+        <div class="container-fluid d-flex">
+            <a href="/" class="navbar-brand text-light">Django Ticket Tracker</a>
             {% if not user.is_authenticated %}
-            <form class="d-flex" role="login" action="login/" method="post">
+            <form class="d-flex" role="login" action="{% url 'login' %}" method="post">
                 {% csrf_token %}
                 <input hidden id="username" name="username" value="guest"/>
                 <input hidden id="password" name="password" value="guestpassword123"/>
                 <button class="btn btn-success" type="submit">Login As Guest</button>
             </form>
             {% else %}
-            <h2 class="text-light">Hello, {{ user.username }}</h2>
-            <form class="d-flex" role="logout" action="logout/" method="post">
-                {% csrf_token %}
-                <button class="btn btn-danger" type="submit">Logout</button>
-            </form>
+            <div class="d-flex gap-4 align-items-center">
+                <h4 class="text-light float-right">Hello, {{ user.username }}</h4>
+                <form class="d-flex" role="logout" action="{% url 'logout' %}" method="post">
+                    {% csrf_token %}
+                    <button class="btn btn-danger" type="submit">Logout</button>
+                </form>
+            </div>
             {% endif %}
         </div>
     </nav>
@@ -55,27 +57,27 @@
                 <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                    <h5 class="modal-title" id="newTicketModalLabel">Add New Ticket</h5>
+                    <h5 class="modal-title" id="newTicketModalLabel">Create New Ticket</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <form role="create" action="/tickets/create/" method="post">
+                    <form role="create" action="{% url 'create' %}" method="post">
                         <div class="modal-body">
                             {% csrf_token %}
-                            <div class="mb-3">
-                                <label for="title" class="form-label">Ticket Title:</label>
-                                <input required type="text" class="form-control" id="title" name="title" placeholder="Ticket title...">
+                            <div class="form-floating mb-4">
+                                <input required type="text" class="form-control" id="title" name="title" placeholder="ticket title">
+                                <label for="title" class="form-label">Ticket Title</label>
                               </div>
-                              <div class="mb-3">
+                              <div class="form-floating mb-4">
+                                <textarea required style="height: 200px;" class="form-control" id="description" name="description" placeholder="description"></textarea>
                                 <label for="description" class="form-label">Ticket Description:</label>
-                                <textarea required style="resize: none" class="form-control" id="description" name="description" rows="5" placeholder="Enter a detailed description of the ticket" ></textarea>
                               </div>
-                              <div class="mb-3">
-                                <label for="priority" class="form-label">Ticket Priority:</label>
-                                <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" id="priority" name="priority">
+                              <div class="form-floating mb-4">
+                                <select class="form-select form-select mb-3" aria-label="priority selection" id="priority" name="priority">
                                     <option value="LOW">Low</option>
                                     <option value="MEDIUM">Medium</option>
                                     <option value="HIGH">High</option>
-                                  </select>
+                                </select>
+                                <label for="priority" class="form-label">Ticket Priority</label>
                               </div>
                         </div>
                         <div class="modal-footer">
@@ -87,104 +89,66 @@
                 </div>
             </div>
 
-            <!-- Ticket Details Modal -->
-            <div class="modal modal-xl fade" id="detailsModal" tabindex="-1" aria-labelledby="detailsModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header d-flex col justify-content-between">
-                        <div class="d-flex row">
-                            <h3 class="modal-title" id="detailsModalLabel"></h3>
-                            <p>Status: <span id="status-badge">Open</span></p>
-                            <p>Priority: <span id="priority-badge">High</span></p>
-                        </div>
-                        <button type="button" class="btn-close align-self-start" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <form role="create" action="/" method="POST">
-                        <div class="modal-body">
-                            {% csrf_token %}
-                            <div class="mb-3">
-                                <label for="edit-title" class="form-label">Title:</label>
-                                <input required type="text" class="form-control" id="edit-title" name="edit-title" placeholder="Ticket title...">
-                              </div>
-                              <div class="mb-3">
-                                <label for="edit-description" class="form-label">Description:</label>
-                                <textarea required style="resize: none" class="form-control" id="edit-description" name="edit-description" rows="5" placeholder="Enter a detailed description of the ticket" ></textarea>
-                              </div>
-                              <div class="mb-3">
-                                <label for="edit-priority" class="form-label">Priority:</label>
-                                <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" id="edit-priority" name="edit-priority">
-                                    <option value="LOW">Low</option>
-                                    <option value="MEDIUM">Medium</option>
-                                    <option value="HIGH">High</option>
-                                  </select>
-                              </div>
-                        </div>
-                        <div class="modal-footer d-flex">
-                            <button type="button" class="btn btn-danger justify-self-start" data-bs-dismiss="modal">Cancel Editing</button>
-                            <button type="submit" class="btn btn-warning flex-grow">Close Ticket</button>
-                            <button type="submit" class="btn btn-primary">Update Ticket</button>
-                        </div>
-                    </form>
-                </div>
-                </div>
-            </div>
-  
+
             <!-- Ticket Management Table -->
-            <table class="table-dark table-hover table-striped table mt-2 align-middle">
-                <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Priority</th>
-                    <th scope="col">Title</th>
-                    <th scope="col">Owner</th>
-                    <th scope="col">Created On</th>
-                    <th scope="col">Details</th>
-                    <th scope="col">Delete</th>
-                </tr>
-                </thead>
-                {% if tickets %}
-                <tbody>
-                    {% for ticket in tickets %}
+            <div class="table-responsive">
+                <table class="table-dark table-hover table-striped table-bordered table mt-2">
+                    <thead>
                     <tr>
-                        {% if ticket.status == 'CLOSED' %}
-                            <th scope="row">{{ticket.id}} <span class="badge bg-danger">{{ ticket.status }}</span></th>
-                        {% else %}
-                            <th scope="row">{{ticket.id}} <span class="badge bg-success">{{ ticket.status }}</span></th>
-                        {% endif %}
-                        {% if ticket.priority == 'HIGH' %}
-                            <td><span class="badge bg-danger text-dark">{{ticket.priority}}</span></td>
-                        {% elif ticket.priority == "MEDIUM" %}
-                            <td><span class="badge bg-warning text-dark">{{ticket.priority}}</span></td>
-                        {% else %}
-                            <td><span class="badge bg-info text-dark">{{ticket.priority}}</span></td>
-                        {% endif %}
-                        <td>{{ ticket.title }}</td>
-                        <td>{{ ticket.owner}}</td>
-                        <td>{{ ticket.creation_date }}</td>
-                        <td>
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#detailsModal" 
-                            data-ticket-date="{{ticket.creation_date}}" 
-                            data-ticket-description="{{ticket.description}}" 
-                            data-ticket-title="{{ticket.title}}" 
-                            data-ticket-priority="{{ticket.priority}}" 
-                            data-ticket-status="{{ticket.status}}" 
-                            data-ticket-owner="{{ticket.owner}}">View Details</button>
-                        </td>
-                        <td>
-                            <form class="d-flex" role="delete" action="{% url 'delete' ticket.id %}" method="get" onsubmit="return confirm('Do you really want to delete this ticket?');">
-                                {% csrf_token %}
-                                <button class="btn btn-danger" type="submit">Delete</button>
-                            </form>
-                        </td>
+                        <th scope="col">ID / Status</th>
+                        <th scope="col">Priority</th>
+                        <th scope="col">Title</th>
+                        <th scope="col">Owner</th>
+                        <th scope="col">Created On</th>
+                        <th scope="col">Action</th>
                     </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                    </thead>
+                    {% if tickets %}
+                    <tbody>
+                        {% for ticket in tickets %}
+                        <tr>
+                            {% if ticket.status == 'CLOSED' %}
+                                <th scope="row">
+                                    <a href="{% url 'details' ticket.id %}">{{ticket.id}}</a> 
+                                    <span class="badge bg-danger">{{ ticket.status }}</span>
+                                </th>
+                            {% else %}
+                                <th scope="row">
+                                    <a href="{% url 'details' ticket.id %}">{{ticket.id}}</a> 
+                                    <span class="badge bg-success">{{ ticket.status }}</span>
+                                </th>
+                            {% endif %}
+                            {% if ticket.priority == 'HIGH' %}
+                                <td><span class="badge bg-danger text-dark">{{ticket.priority}}</span></td>
+                            {% elif ticket.priority == "MEDIUM" %}
+                                <td><span class="badge bg-warning text-dark">{{ticket.priority}}</span></td>
+                            {% else %}
+                                <td><span class="badge bg-info text-dark">{{ticket.priority}}</span></td>
+                            {% endif %}
+                            <td>{{ ticket.title }}</td>
+                            <td>{{ ticket.owner}}</td>
+                            <td>{{ ticket.creation_date }}</td>
+                            <td class="d-flex gap-3">
+                                <!-- TODO: put onsubmit code into js file -->
+                                <form class="d-flex" role="delete" action="{% url 'details' ticket.id %}" method="get">
+                                    {% csrf_token %}
+                                    <button class="btn btn-primary" type="submit">Edit</button>
+                                </form>
+                                <form class="d-flex" role="delete" action="{% url 'delete' ticket.id %}" method="get" onsubmit="return confirm('Do you really want to delete this ticket?');">
+                                    {% csrf_token %}
+                                    <button class="btn btn-danger" type="submit">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
             {% endif %}
         {% else %}
             <div class="container text-center text-light mt-5 font-size-lg">
-                <h2>Welcome to the Django Ticket Manager</h2>
-                <p>Log in with pre-defined credentials above to view and manage tickets.</p>
+                <h2>Django Ticket Manager</h2>
+                <p>Log in with guest credentials above to view and manage tickets.</p>
             </div>
         {% endif %}
     </div>
