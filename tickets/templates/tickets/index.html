@@ -33,7 +33,7 @@
         </div>
     </nav>
 
-    <div class="container bg-dark p-4">
+    <div class="container mt-4">
         {% if user.is_authenticated %}
 
             {% if messages %}
@@ -91,8 +91,8 @@
 
 
             <!-- Ticket Management Table -->
-            <div class="table-responsive">
-                <table class="table-dark table-hover table-striped table-bordered table mt-2">
+            <div class="table-responsive container border border-opacity-0 bg-light rounded p-4 mt-2">
+                <table class="table-hover table-striped table-bordered table mt-2 rounded">
                     <thead>
                     <tr>
                         <th scope="col">ID / Status</th>

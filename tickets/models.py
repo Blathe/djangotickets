@@ -23,3 +23,10 @@ class Ticket(models.Model):
 
     def __str__(self):
         return self.title;
+
+class Comment(models.Model):
+    creation_date = models.DateTimeField(auto_now=True)
+    owner = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)
+    body = models.CharField(max_length=200)
+    closed = models.IntegerField(default=0)

@@ -32,10 +32,111 @@
         </div>
     </nav>
 
-    <div class="container bg-dark">
-        {% if ticket %}
-        <h2 class="text-light">{{ticket.title}}</h2>
-        {% endif %}
+    <div class="container mt-4">
+        {% if messages %}
+        <ul style="margin: 0; padding: 0;">
+            {% for message in messages %}
+                <li style="list-style: none" {% if message.tags %} class="alert alert-{{ message.tags }}" {% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+        <a class="btn btn-primary mt-2" href="{% url 'index' %}">
+            Back To Tickets
+        </a>
+        <div class="container border border-opacity-0 bg-light rounded p-4 mt-2">
+            {% if ticket %}
+                {% if user.is_authenticated %}
+                    <h2><span>#{{ticket.id }}</span> - {{ticket.title}}</h2>
+                    <p>{{ticket.owner}}</p>
+                    <p>Opened: {{ticket.creation_date}}</p>
+                    {% if ticket.status == "OPEN" %}
+                        <p>Status: <span class="badge bg-success">{{ticket.status}}</span></p>
+                    {% else %}
+                        <p>Status: <span class="badge bg-danger">{{ticket.status}}</span></p>
+                    {% endif %}
+                    {% if ticket.priority == "LOW" %}
+                        <p>Priority: <span class="badge bg-info text-dark">{{ticket.priority}}</span></p>
+                    {% elif ticket.priority == "MEDIUM" %}
+                        <p>Priority: <span class="badge bg-warning text-dark">{{ticket.priority}}</span></p>
+                    {% elif ticket.priority == "HIGH" %}
+                        <p>Priority: <span class="badge bg-danger text-dark">{{ticket.priority}}</span></p>
+                    {% endif %}
+                    <h4>Ticket Description:</h4>
+                    <textarea disabled required style="height: 100px; resize: none;" class="form-control">{{ticket.description}}</textarea>
+
+                    {% if comments %}
+                    <div class="mt-4">
+                        <h4>Comments:</h4>
+                        <div class="list-group disabled">
+                            {% for comment in comments %}
+                            <a href="#" class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                  <h5 class="mb-1">{{comment.owner}} {% if comment.closed == 1 %}<span class="badge bg-warning text-dark">Closing Comment</span>{% endif %}</h5>
+                                  <small>{{ comment.creation_date }}</small>
+                                </div>
+                                <p class="mb-1">{{comment.body}}</p>
+                              </a>
+                            
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+    
+                    {% if ticket.status == "OPEN" %}
+                    <div class="d-flex flex-column mt-4">
+                        <div class="d-flex flex-row justify-content-end gap-4">
+                            <a class="btn btn-warning" data-bs-toggle="collapse" href="#collapse-confirm-close" role="button" aria-expanded="false" aria-controls="collapse-confirm-close">
+                                Close Ticket
+                            </a>
+                            <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                                + New Comment
+                            </a>
+                        </div>
+                        <form role="closeticket" action="{% url 'close' ticket.id %}" method="post" onsubmit="return confirm('Do you really want to close this ticket?');">
+                            {% csrf_token %}
+                            <div class="collapse mt-4" id="collapse-confirm-close">
+                                <div class="card card-body">
+                                    <div class="form-floating">
+                                        <textarea required style="height: 100px;" class="form-control" id="body" name="body" placeholder="body"></textarea>
+                                        <label for="description" class="form-label">You must give a reason for closing a ticket...</label>
+                                    </div>
+                                    <div class="d-flex flex-row justify-content-end mt-2 gap-2">
+                                        <a class="btn btn-danger" data-bs-toggle="collapse" href="#collapse-confirm-close" role="button" aria-expanded="false" aria-controls="collapse-confirm-close">
+                                            Cancel
+                                        </a>
+                                        <button class="btn btn-warning" type="submit">Confirm</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <form role="postcomment" action="{% url 'comment' ticket.id %}" method="post">
+                            {% csrf_token %}
+                            <div class="collapse mt-4" id="collapseExample">
+                                <div class="card card-body">
+                                    <div class="form-floating">
+                                        <textarea required style="height: 100px;" class="form-control" id="body" name="body" placeholder="body"></textarea>
+                                        <label for="description" class="form-label">Comment:</label>
+                                    </div>
+                                    <div class="d-flex flex-row justify-content-end mt-2 gap-2">
+                                        <a class="btn btn-danger" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                                            Cancel
+                                        </a>
+                                        <button class="btn btn-success">Submit Comment</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        {% else %}
+                        <div class="d-flex justify-content-end mt-4">
+                            <a class="btn btn-warning" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                                Reopen Ticket
+                            </a>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+        </div>
     </div>
 </body>
 
