@@ -130,10 +130,7 @@
                             <td>{{ ticket.creation_date }}</td>
                             <td class="d-flex gap-3">
                                 <!-- TODO: put onsubmit code into js file -->
-                                <form class="d-flex" role="delete" action="{% url 'details' ticket.id %}" method="get">
-                                    {% csrf_token %}
-                                    <button class="btn btn-primary" type="submit">Edit</button>
-                                </form>
+                                <a class="btn btn-primary" href="{% url 'details' ticket.id %}">Details</a>
                                 <form class="d-flex" role="delete" action="{% url 'delete' ticket.id %}" method="get" onsubmit="return confirm('Do you really want to delete this ticket?');">
                                     {% csrf_token %}
                                     <button class="btn btn-danger" type="submit">Delete</button>
