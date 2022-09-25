@@ -3,7 +3,15 @@ A simple ticket manager made with Django, Bootstrap, and Django templates.
 
 By no means does this include best practices, but it gets a simple project started.
 
-![Alt Text](https://i.ibb.co/KmnjTJR/djangoticketmanager.jpg)
+![Alt Text](https://i.postimg.cc/j5yZVJsF/Screenshot-2022-09-25-121508.jpg)
+
+# Base Functionality
+
+- Session based Authorization
+- Creating Tickets
+- Commenting on Tickets
+- Closing / Deleting tickets
+- Reopening Tickets
 
 # Installation
 
