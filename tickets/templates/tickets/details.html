@@ -176,7 +176,7 @@
                             <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#reopenModal">
                                 Reopen Ticket
                             </button>
-                            <!-- Comment Modal -->
+                            <!-- Reopen ticket Modal -->
                             <div class="modal fade" id="reopenModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="reopenModalLabel" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
@@ -189,7 +189,7 @@
                                                     {% csrf_token %}
                                                     <div class="form-floating">
                                                         <textarea required style="height: 100px;" class="form-control" id="body" name="body" placeholder="body"></textarea>
-                                                        <label for="description" class="form-label">Reason for reopning this ticket:</label>
+                                                        <label for="description" class="form-label">Reason for reopening this ticket:</label>
                                                     </div>
                                             </div>
                                             <div class="modal-footer">
