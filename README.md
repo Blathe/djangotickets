@@ -18,6 +18,8 @@ By no means does this include best practices, but it gets a simple project start
 1. Install pip packages:
 `pip install -r requirements.txt`
 
+2. Create a .env file in your main folder with the variable `SECRET_KEY = 'YOUR SECRET KEY'`
+
 2. Create a super user account:
 `python manage.py createsuperuser`
 
