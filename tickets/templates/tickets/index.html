@@ -46,10 +46,9 @@
 
             <!-- controls above table -->
             <div class="d-flex justify-content-between align-items-end text-light">
-                <button type="button" class="btn btn-success flex-grow" data-bs-toggle="modal" data-bs-target="#newTicketModal">
+                <button type="button" class="btn btn-primary flex-grow" data-bs-toggle="modal" data-bs-target="#newTicketModal">
                     + New Ticket
                 </button>
-                <h5>Total Tickets: {{ tickets.count }}</h5>
             </div>
 
             <!-- New Ticket Modal -->
@@ -92,12 +91,14 @@
 
             <!-- Ticket Management Table -->
             <div class="table-responsive container border border-opacity-0 bg-light rounded p-4 mt-2">
-                <table class="table-hover table-striped table-bordered table mt-2 rounded">
+                <table class="shadow table-hover table-striped table-bordered table mt-2 rounded">
+                    <caption>{{tickets.count}} tickets loaded.</caption>
                     <thead>
                     <tr>
-                        <th scope="col">ID / Status</th>
+                        <th scope="col">ID</th>
                         <th scope="col">Priority</th>
-                        <th scope="col">Title</th>
+                        <th scope="col">Subject</th>
+                        <th scope="col">Status</th>
                         <th scope="col">Owner</th>
                         <th scope="col">Created On</th>
                         <th scope="col">Action</th>
@@ -107,27 +108,19 @@
                     <tbody>
                         {% for ticket in tickets %}
                         <tr>
-                            {% if ticket.status == 'CLOSED' %}
-                                <th scope="row">
-                                    <a href="{% url 'details' ticket.id %}">{{ticket.id}}</a> 
-                                    <span class="badge bg-danger">{{ ticket.status }}</span>
-                                </th>
-                            {% else %}
-                                <th scope="row">
-                                    <a href="{% url 'details' ticket.id %}">{{ticket.id}}</a> 
-                                    <span class="badge bg-success">{{ ticket.status }}</span>
-                                </th>
-                            {% endif %}
-                            {% if ticket.priority == 'HIGH' %}
-                                <td><span class="badge bg-danger text-dark">{{ticket.priority}}</span></td>
-                            {% elif ticket.priority == "MEDIUM" %}
-                                <td><span class="badge bg-warning text-dark">{{ticket.priority}}</span></td>
-                            {% else %}
-                                <td><span class="badge bg-info text-dark">{{ticket.priority}}</span></td>
-                            {% endif %}
+                            <th><a href="{% url 'details' ticket.id %}">{{ticket.id}}</a></th>
+                            <td><span class="badge bg-secondary rounded-pill text-light">{{ticket.priority}}</span></td>
                             <td>{{ ticket.title }}</td>
+                            {% if ticket.status == 'CLOSED' %}
+                                <td><span class="badge rounded-pill bg-secondary">{{ticket.status}}<span></td>
+                            {% else %}
+                                <td><span class="badge rounded-pill bg-primary">{{ticket.status}}<span></td>
+                            {% endif %}
                             <td>{{ ticket.owner}}</td>
-                            <td>{{ ticket.creation_date }}</td>
+                            <td>
+                                {% load tz %}
+                                {{ ticket.creation_date | utc | date }}
+                            </td>
                             <td class="d-flex gap-3">
                                 <!-- TODO: put onsubmit code into js file -->
                                 <a class="btn btn-primary" href="{% url 'details' ticket.id %}">Details</a>
