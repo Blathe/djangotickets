@@ -128,6 +128,11 @@
                         <div class="d-flex align-items-center gap-2">
                             <h5><strong>{{comment.owner}}</strong></h5>
                             <small class="text-secondary">{{comment.creation_date | utc | date}}</small>
+                            {% if comment.tag == 'REOPENED' %}
+                                <h5><span class="badge bg-primary">Reopened</span></h5>
+                            {% elif comment.tag == 'CLOSED' %}
+                                <h5><span class="badge bg-primary">Closed</span></h5>
+                            {% endif %}
                         </div>
                         <p>{{comment.body}}</p>
                         <hr class="w-100"/>
