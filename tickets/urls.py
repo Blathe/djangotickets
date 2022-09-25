@@ -8,6 +8,7 @@ urlpatterns = [
     path('create/', views.create, name="create"),
     path('delete/<int:pk>', views.delete, name="delete"),
     path('close/<int:pk>', views.close, name="close"),
+    path('open/<int:pk>', views.open, name="open"),
     #this should probably be moved into a Comments app instead of going through tickets.
     path('comment/<int:pk>', views.comment, name="comment"),
 ]

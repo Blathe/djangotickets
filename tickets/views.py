@@ -18,7 +18,7 @@ def details(request, pk):
     if request.method == "GET":
         if request.user.is_authenticated:
             ticket = Ticket.objects.get(pk=pk)
-            comments = Comment.objects.all().filter(ticket = ticket)
+            comments = Comment.objects.all().filter(ticket = ticket).order_by('-creation_date')
             return render(request, 'tickets/details.html', {'ticket':ticket, 'comments':comments})
         return render(request, 'tickets/index.html')
 
@@ -39,6 +39,27 @@ def create(request):
         return redirect('/')
     return redirect('/')
 
+def open(request, pk):
+    if request.method == "POST":
+        if request.user.is_authenticated:
+            ticket = Ticket.objects.get(pk=pk)
+            ticket.status = 'OPEN'
+            ticket.save(update_fields=['status'])
+            comment = Comment()
+            comment.owner = request.user
+            comment.ticket = ticket
+            comment.tag = 'REOPENED' #set tag to reopened to display a badge next to the comment
+            form = CommentForm(request.POST, instance=comment)
+            if form.is_valid():
+                form.save()
+                messages.add_message(request, messages.SUCCESS, 'You have successfully reopened ticket #{id}'.format(id = ticket.id))
+                return redirect('/tickets/details/{id}'.format(id = pk))
+            else:
+                messages.add_message(request, messages.WARNING, 'Error reopening ticket #{id}'.format(id = ticket.id))
+                return redirect('/tickets/details/{id}'.format(id = pk))
+        else:
+            return redirect('/tickets/details/{id}'.format(id = pk))
+
 #/tickets/close/{id}
 def close(request, pk):
     if request.method == "POST":
@@ -49,7 +70,7 @@ def close(request, pk):
             comment = Comment()
             comment.owner = request.user
             comment.ticket = ticket
-            comment.closed = 1 #set closed to 1 so we can determine this comment is associated with the ticket being closed
+            comment.tag = 'CLOSED' #set tag to closed to display a badge next to the comment.
             form = CommentForm(request.POST, instance=comment)
             if form.is_valid():
                 form.save()

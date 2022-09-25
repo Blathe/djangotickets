@@ -25,8 +25,13 @@ class Ticket(models.Model):
         return self.title;
 
 class Comment(models.Model):
+    TAG_CHOICES = (
+        ('DEFAULT', 'Default'),
+        ('CLOSED', 'Closed'),
+        ('REOPENED', 'Reopened'),
+    )
     creation_date = models.DateTimeField(auto_now=True)
     owner = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)
     body = models.CharField(max_length=200)
-    closed = models.IntegerField(default=0)
+    tag = models.CharField(choices=TAG_CHOICES, max_length=20, default="DEFAULT")
