@@ -7,7 +7,7 @@ By no means does this include best practices, but it gets a simple project start
 
 # Base Functionality
 
-- Session based Authorization
+- Session based Authentication
 - Creating Tickets
 - Commenting on Tickets
 - Closing / Deleting tickets
