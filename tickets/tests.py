@@ -8,7 +8,7 @@ class TicketTestCase(TestCase):
         User.objects.create_user(username="test_user", password="test_password", email="test@test.com")
         self.user = User.objects.get(pk=1)
 
-    def test_valid_user(self):
+    def test_user_exists(self):
         user = User.objects.get(pk=1)
         self.assertEqual(user.username, "test_user")
         
