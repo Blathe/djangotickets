@@ -11,8 +11,26 @@ from .models import Ticket, Comment
 def index(request):
     if request.method == "GET":
         if request.user.is_authenticated:
-            tickets = Ticket.objects.order_by('creation_date')
-            return render(request, 'tickets/index.html', {'tickets':tickets})
+            if request.GET.get('sort') is not None:
+                sort = request.GET.get('sort')
+                
+                if sort == 'pHighToLow':
+                    tickets = Ticket.objects.order_by('-priority')
+                elif sort == 'pLowToHigh':
+                    tickets = Ticket.objects.order_by('priority')
+                elif sort == 'sOpenClosed':
+                    tickets = Ticket.objects.order_by('-status')
+                elif sort == 'sClosedOpen':
+                    tickets = Ticket.objects.order_by('status')
+                elif sort == 'NewestFirst':
+                    tickets = Ticket.objects.order_by('-creation_date')
+                elif sort == 'OldestFirst':
+                    tickets = Ticket.objects.order_by('creation_date')
+                    
+                return render(request, 'tickets/index.html', {'tickets':tickets})
+            else:    
+                tickets = Ticket.objects.order_by('creation_date')
+                return render(request, 'tickets/index.html', {'tickets':tickets})
         return render(request, 'tickets/index.html')
     
 #ticket details page

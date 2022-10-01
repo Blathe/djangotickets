@@ -90,6 +90,16 @@
 
             <!-- Ticket Management Table -->
             <div class="table-responsive container border border-opacity-0 bg-light rounded p-4 mt-2">
+                <div class="d-flex justify-content-end align-items-start gap-2">
+                    <select id="sort-select-box" class="form-select form-select-sm w-25" aria-label=".form-select-sm example" onchange="updateSort()">
+                        <option value="OldestFirst">Date: Oldest First</option>
+                        <option value="NewestFirst">Date: Newest First</option>
+                        <option value="pHighToLow">Priority: High to Low</option>
+                        <option value="pLowToHigh">Priority: Low to High</option>
+                        <option value="sOpenClosed">Status: Open First</option>
+                        <option value="sClosedOpen">Status: Closed First</option>
+                    </select>
+                </div>
                 <table class="shadow table-hover table-striped table-bordered table mt-2 rounded">
                     <caption>{{tickets.count}} tickets loaded.</caption>
                     <thead>
