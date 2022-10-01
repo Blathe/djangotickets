@@ -11,8 +11,10 @@ class TicketTestCase(TestCase):
     def test_valid_user(self):
         user = User.objects.get(pk=1)
         self.assertEqual(user.username, "test_user")
-
+        
     def test_create_ticket_without_being_authenticated(self):
+        """This should pass if a user gets a 302 status before logging in, and a 200 status code after logging in and posting a ticket.
+        """
         ticket = {
             "title":"Test",
             "description":"test description",
@@ -24,3 +26,16 @@ class TicketTestCase(TestCase):
         self.client.force_login(self.user)
         resp = self.client.post(reverse("create"), ticket)
         self.assertEquals(resp.status_code, 200)
+        
+    def test_create_ticket_with_invalid_priority(self):
+        """This should pass if the response status code is 302 (the Create view returns a status 302 due to redirect if ticket validation fails)
+        """
+        invalid_ticket = {
+            "title":"Test",
+            "description":"test description",
+            "priority": 'INVALID_PRIORITY',
+            "status": "OPEN",
+        }
+        self.client.force_login(self.user)
+        resp = self.client.post(reverse("create"), invalid_ticket)
+        self.assertEquals(resp.status_code, 302)

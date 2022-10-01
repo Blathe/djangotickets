@@ -1,3 +1,4 @@
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -36,10 +37,9 @@ def create(request):
             messages.add_message(request, messages.SUCCESS, 'Success! Ticket #{id} has been created.'.format(id = ticket.id))
             return render(request, 'tickets/details.html', {'ticket':ticket})
         else:
-            tickets = Ticket.objects.order_by('creation_date')
             messages.add_message(request, messages.INFO, 'Error creating ticket.')
-            return render(request, '/', {'tickets':tickets})
-    return redirect('/')
+            return HttpResponseRedirect('/')
+    return HttpResponseRedirect('/')
 
 @login_required
 def open(request, pk):
