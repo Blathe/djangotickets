@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
 from .forms import TicketForm, CommentForm
 
@@ -12,6 +13,7 @@ def index(request):
             tickets = Ticket.objects.order_by('creation_date')
             return render(request, 'tickets/index.html', {'tickets':tickets})
         return render(request, 'tickets/index.html')
+    
 #ticket details page
 #/tickets/details/{id}
 def details(request, pk):
@@ -23,22 +25,23 @@ def details(request, pk):
         return render(request, 'tickets/index.html')
 
 #/tickets/create/
+@login_required
 def create(request):
     if request.method == "POST":
-        if request.user.is_authenticated:
-            ticket = Ticket()
-            ticket.owner = request.user
-            form = TicketForm(request.POST, instance=ticket)
-            if form.is_valid():
-                form.save()
-                messages.add_message(request, messages.SUCCESS, 'Success! Ticket #{id} has been created.'.format(id = ticket.id))
-                return redirect('/')
-            else:
-                messages.add_message(request, messages.INFO, 'Error creating ticket.')
-                return redirect('/')
-        return redirect('/')
+        ticket = Ticket()
+        ticket.owner = request.user
+        form = TicketForm(request.POST, instance=ticket)
+        if form.is_valid():
+            form.save()
+            messages.add_message(request, messages.SUCCESS, 'Success! Ticket #{id} has been created.'.format(id = ticket.id))
+            return render(request, 'tickets/details.html', {'ticket':ticket})
+        else:
+            tickets = Ticket.objects.order_by('creation_date')
+            messages.add_message(request, messages.INFO, 'Error creating ticket.')
+            return render(request, '/', {'tickets':tickets})
     return redirect('/')
 
+@login_required
 def open(request, pk):
     if request.method == "POST":
         if request.user.is_authenticated:
@@ -61,6 +64,7 @@ def open(request, pk):
             return redirect('/tickets/details/{id}'.format(id = pk))
 
 #/tickets/close/{id}
+@login_required
 def close(request, pk):
     if request.method == "POST":
         if request.user.is_authenticated:
@@ -83,7 +87,7 @@ def close(request, pk):
             return redirect('/tickets/details/{id}'.format(id = pk))
     return redirect('/')
 
-
+@login_required
 def comment(request, pk):
     if request.method == "POST":
         ticket = Ticket.objects.get(pk=pk)
@@ -104,7 +108,7 @@ def comment(request, pk):
                 return redirect('/tickets/details/{id}'.format(id = pk))
     return redirect('/')
 
-
+@login_required
 def delete(request, pk):
     if request.user.is_authenticated:
         ticket = Ticket.objects.get(pk=pk)

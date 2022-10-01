@@ -103,7 +103,7 @@
                         {% else %}
                             <p><strong>Status:</strong> <span class="badge bg-primary">{{ticket.status}}</span></p>
                         {% endif %}
-                        <p><strong>Priority:</strong> <span class="badge bg-primary">{{ticket.priority}}</span></p>
+                        <p><strong>Priority:</strong> <span class="badge bg-primary">{{ticket.get_priority_display}}</span></p>
                     </div>
                 </div>
                 <h5>Description</h5>

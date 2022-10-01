@@ -9,9 +9,9 @@ class Ticket(models.Model):
         ('CLOSED', 'Closed')
     )
     PRIORITY_CHOICES = (
-        ('LOW', 'Low'),
-        ('MEDIUM', 'Medium'),
-        ('HIGH', 'High'),
+        (1, 'Low'),
+        (2, 'Medium'),
+        (3, 'High'),
     )
 
     title = models.CharField(max_length=80)
@@ -19,10 +19,10 @@ class Ticket(models.Model):
     creation_date = models.DateTimeField(auto_now=True)
     owner = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     status = models.CharField(choices=STATUS_CHOICES, max_length=20, default="OPEN")
-    priority = models.CharField(choices=PRIORITY_CHOICES, max_length=20, default="MEDIUM")
+    priority = models.PositiveIntegerField(choices=PRIORITY_CHOICES, default=2)
 
     def __str__(self):
-        return self.title;
+        return f"{self.title} - Priority: {self.priority}"
 
 class Comment(models.Model):
     TAG_CHOICES = (

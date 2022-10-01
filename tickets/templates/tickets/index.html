@@ -18,7 +18,7 @@
             <form class="d-flex" role="login" action="{% url 'login' %}" method="post">
                 {% csrf_token %}
                 <input hidden id="username" name="username" value="guest"/>
-                <input hidden id="password" name="password" value="guestpassword123"/>
+                <input hidden id="password" name="password" value="guestpass123"/>
                 <button class="btn btn-success" type="submit">Login As Guest</button>
             </form>
             {% else %}
@@ -72,9 +72,9 @@
                               </div>
                               <div class="form-floating mb-4">
                                 <select class="form-select form-select mb-3" aria-label="priority selection" id="priority" name="priority">
-                                    <option value="LOW">Low</option>
-                                    <option value="MEDIUM">Medium</option>
-                                    <option value="HIGH">High</option>
+                                    <option value="1">Low</option>
+                                    <option value="2">Medium</option>
+                                    <option value="3">High</option>
                                 </select>
                                 <label for="priority" class="form-label">Ticket Priority</label>
                               </div>
@@ -109,7 +109,7 @@
                         {% for ticket in tickets %}
                         <tr>
                             <th><a href="{% url 'details' ticket.id %}">{{ticket.id}}</a></th>
-                            <td><span class="badge bg-secondary rounded-pill text-light">{{ticket.priority}}</span></td>
+                            <td><span class="badge bg-secondary rounded-pill text-light">{{ticket.get_priority_display}}</span></td>
                             <td>{{ ticket.title }}</td>
                             {% if ticket.status == 'CLOSED' %}
                                 <td><span class="badge rounded-pill bg-secondary">{{ticket.status}}<span></td>
