@@ -6,11 +6,10 @@ from django.urls import reverse
 class TicketTestCase(TestCase):
     def setUp(self):
         User.objects.create_user(username="test_user", password="test_password", email="test@test.com")
-        self.user = User.objects.get(pk=1)
 
     def test_user_exists(self):
-        user = User.objects.get(pk=1)
-        self.assertEqual(user.username, "test_user")
+        self.user = User.objects.get(pk=1)
+        self.assertEqual(self.user.username, "test_user")
         
     def test_create_ticket_without_being_authenticated(self):
         """This should pass if a user gets a 302 status before logging in, and a 200 status code after logging in and posting a ticket.
