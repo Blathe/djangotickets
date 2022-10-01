@@ -29,6 +29,7 @@ class TicketTestCase(TestCase):
         
     def test_create_ticket_with_invalid_priority(self):
         """This should pass if the response status code is 302 (the Create view returns a status 302 due to redirect if ticket validation fails)
+        when we post an invalid ticket. We should get a status 200 when posting a valid ticket.
         """
         invalid_ticket = {
             "title":"Test",
@@ -39,3 +40,11 @@ class TicketTestCase(TestCase):
         self.client.force_login(self.user)
         resp = self.client.post(reverse("create"), invalid_ticket)
         self.assertEquals(resp.status_code, 302)
+        valid_ticket = {
+            "title":"Test",
+            "description":"test description",
+            "priority": 1,
+            "status": "OPEN",
+        }
+        resp = self.client.post(reverse("create"), valid_ticket)
+        self.assertEquals(resp.status_code, 200)
