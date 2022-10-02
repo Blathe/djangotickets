@@ -14,7 +14,7 @@ class Ticket(models.Model):
         (3, 'High'),
     )
 
-    title = models.CharField(max_length=80)
+    title = models.CharField(max_length=200)
     description = models.TextField(max_length=600)
     creation_date = models.DateTimeField(auto_now=True)
     owner = models.ForeignKey(User, on_delete=models.DO_NOTHING)
@@ -33,5 +33,5 @@ class Comment(models.Model):
     creation_date = models.DateTimeField(auto_now=True)
     owner = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)
-    body = models.CharField(max_length=200)
+    body = models.CharField(max_length=400)
     tag = models.CharField(choices=TAG_CHOICES, max_length=20, default="DEFAULT")
