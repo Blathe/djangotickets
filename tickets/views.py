@@ -33,7 +33,7 @@ def index(request):
                     elif sort == 'OldestFirst':
                         tickets = tickets.order_by('creation_date')
                
-                return render(request, 'tickets/index.html', {'tickets':tickets, 'sort': sort})
+                return render(request, 'tickets/index.html', {'tickets':tickets})
             else:    
                 tickets = Ticket.objects.order_by('creation_date')
                 return render(request, 'tickets/index.html', {'tickets':tickets})
