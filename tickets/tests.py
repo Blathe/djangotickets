@@ -5,7 +5,7 @@ from django.urls import reverse
 # Create your tests here.
 class TicketTestCase(TestCase):
     def setUp(self):
-        User.objects.create_user(username="test_user", password="test_password", email="test@test.com")
+        self.user = User.objects.create_user(username="test_user", password="test_password", email="test@test.com")
 
     def test_user_exists(self):
         self.user = User.objects.get(pk=1)

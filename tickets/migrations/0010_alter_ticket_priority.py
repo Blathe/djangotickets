@@ -21,10 +21,10 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(update_priorities),
         migrations.AlterField(
             model_name='ticket',
             name='priority',
             field=models.PositiveIntegerField(choices=[(1, 'Low'), (2, 'Medium'), (3, 'High')], default=2),
         ),
+        migrations.RunPython(update_priorities),
     ]
