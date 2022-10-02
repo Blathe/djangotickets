@@ -11,27 +11,33 @@ from .models import Ticket, Comment
 def index(request):
     if request.method == "GET":
         if request.user.is_authenticated:
-            if request.GET.get('sort') is not None:
+            tickets = Ticket.objects.all()
+            
+            if request.GET.get('filters') is not None or request.GET.get('sort') is not None:
+                filters = request.GET.get('filters')
                 sort = request.GET.get('sort')
                 
-                if sort == 'pHighToLow':
-                    tickets = Ticket.objects.order_by('-priority')
-                elif sort == 'pLowToHigh':
-                    tickets = Ticket.objects.order_by('priority')
-                elif sort == 'sOpenClosed':
-                    tickets = Ticket.objects.order_by('-status')
-                elif sort == 'sClosedOpen':
-                    tickets = Ticket.objects.order_by('status')
-                elif sort == 'NewestFirst':
-                    tickets = Ticket.objects.order_by('-creation_date')
-                elif sort == 'OldestFirst':
-                    tickets = Ticket.objects.order_by('creation_date')
-                    
-                return render(request, 'tickets/index.html', {'tickets':tickets})
+                if (filters is not None):
+                        tickets = tickets.filter(status = 'OPEN')
+                if (sort is not None):
+                    if sort == 'pHighToLow':
+                        tickets = tickets.order_by('-priority')
+                    elif sort == 'pLowToHigh':
+                        tickets = tickets.order_by('priority')
+                    elif sort == 'sOpenClosed':
+                        tickets = tickets.order_by('-status')
+                    elif sort == 'sClosedOpen':
+                        tickets = tickets.order_by('status')
+                    elif sort == 'NewestFirst':
+                        tickets = tickets.order_by('-creation_date')
+                    elif sort == 'OldestFirst':
+                        tickets = tickets.order_by('creation_date')
+               
+                return render(request, 'tickets/index.html', {'tickets':tickets, 'sort': sort})
             else:    
                 tickets = Ticket.objects.order_by('creation_date')
                 return render(request, 'tickets/index.html', {'tickets':tickets})
-        return render(request, 'tickets/index.html')
+    return render(request, 'tickets/index.html')
     
 #ticket details page
 #/tickets/details/{id}
