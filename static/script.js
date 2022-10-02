@@ -1,10 +1,13 @@
 const urlParams = new URLSearchParams(window.location.search);
 
-document.getElementById('hide-closed-filter').checked = localStorage.getItem('hideClosedChecked')
-document.getElementById('sort-select-box').value = localStorage.getItem('sortSelection')
+var hideClosedFilterCheckbox = document.getElementById('hide-closed-filter');
+hideClosedFilterCheckbox.checked = localStorage.getItem('hideClosedChecked');
+
+var sortSelectionBox = document.getElementById('sort-select-box');
+sortSelectionBox.value = localStorage.getItem('sortSelection');
 
 function updateSort() {
-    var sortSelection = document.getElementById('sort-select-box').value;
+    var sortSelection = sortSelectionBox.value;
     urlParams.set('sort', sortSelection);
     localStorage.setItem('sortSelection', sortSelection)
     window.location.search = urlParams;
