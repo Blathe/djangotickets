@@ -22,7 +22,10 @@ def index(request):
                 if (filters is not None):
                         tickets = tickets.filter(status = 'OPEN')
                 if (sort is not None):
-                    tickets = tickets.order_by(sort)
+                    if (sort == "default"):
+                        tickets = tickets.order_by("creation_date")
+                    else:
+                        tickets = tickets.order_by(sort)
                
                 return render(request, 'tickets/index.html', {'tickets':tickets})
             else:    
