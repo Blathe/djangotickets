@@ -99,12 +99,12 @@
                     </div>
                     <select id="sort-select-box" class="form-select form-select-sm w-25" aria-label=".form-select-sm example" onchange="updateSort()">
                         <option selected>Sort</option>
-                        <option value="OldestFirst">Date: Oldest First</option>
-                        <option value="NewestFirst">Date: Newest First</option>
-                        <option value="pHighToLow">Priority: High to Low</option>
-                        <option value="pLowToHigh">Priority: Low to High</option>
-                        <option value="sOpenClosed">Status: Open First</option>
-                        <option value="sClosedOpen">Status: Closed First</option>
+                        <option value="-creation_date">Date: Oldest First</option>
+                        <option value="creation_date">Date: Newest First</option>
+                        <option value="-priority">Priority: High to Low</option>
+                        <option value="priority">Priority: Low to High</option>
+                        <option value="status">Status: Open First</option>
+                        <option value="-status">Status: Closed First</option>
                     </select>
                 </div>
                 <table class="shadow table-hover table-striped table-bordered table mt-2 rounded">

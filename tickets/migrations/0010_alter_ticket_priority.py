@@ -2,17 +2,19 @@
 
 from django.db import migrations, models
 
+
 def update_priorities(apps, schema_editor):
     # Update our existing Tickets to conform to the new migration.
     Ticket = apps.get_model('tickets', 'Ticket')
+    priority_translation_table = {
+        "HIGH": 3,
+        "MEDIUM": 2,
+        "LOW": 1,
+    }
     for ticket in Ticket.objects.all():
-        if ticket.priority == 'HIGH':
-            ticket.priority = 3
-        elif ticket.priority == 'MEDIUM':
-            ticket.priority = 2
-        elif ticket.priority == 'LOW':
-            ticket.priority = 1
+        ticket.priority = priority_translation_table[ticket.priority]
         ticket.save()
+
 
 class Migration(migrations.Migration):
 

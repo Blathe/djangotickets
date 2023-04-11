@@ -6,6 +6,8 @@ from django.contrib.auth.decorators import login_required
 from .forms import TicketForm, CommentForm
 
 from .models import Ticket, Comment
+
+
 #index page
 #/
 def index(request):
@@ -20,18 +22,7 @@ def index(request):
                 if (filters is not None):
                         tickets = tickets.filter(status = 'OPEN')
                 if (sort is not None):
-                    if sort == 'pHighToLow':
-                        tickets = tickets.order_by('-priority')
-                    elif sort == 'pLowToHigh':
-                        tickets = tickets.order_by('priority')
-                    elif sort == 'sOpenClosed':
-                        tickets = tickets.order_by('-status')
-                    elif sort == 'sClosedOpen':
-                        tickets = tickets.order_by('status')
-                    elif sort == 'NewestFirst':
-                        tickets = tickets.order_by('-creation_date')
-                    elif sort == 'OldestFirst':
-                        tickets = tickets.order_by('creation_date')
+                    tickets = tickets.order_by(sort)
                
                 return render(request, 'tickets/index.html', {'tickets':tickets})
             else:    

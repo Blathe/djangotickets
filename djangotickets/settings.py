@@ -42,7 +42,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 if not IS_HEROKU:
     DEBUG = True
 else:
-    DEBUG = False
+    DEBUG = True
 
 if IS_HEROKU:
     ALLOWED_HOSTS = ["*"]
