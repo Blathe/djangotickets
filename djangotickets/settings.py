@@ -38,11 +38,11 @@ USE_TZ = True
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-#if not IS_HEROKU:
-    #DEBUG = True
-#else:
-    #DEBUG = True
+#DEBUG = True
+if not IS_HEROKU:
+    DEBUG = True
+else:
+    DEBUG = True
 
 if IS_HEROKU:
     ALLOWED_HOSTS = ["*"]
