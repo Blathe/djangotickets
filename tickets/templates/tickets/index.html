@@ -99,12 +99,12 @@
                     </div>
                     <select id="sort-select-box" class="form-select form-select-sm w-25" aria-label=".form-select-sm example" onchange="updateSort()">
                         <option value="default" selected>Sort</option>
-                        <option value="-creation_date">Date: Oldest First</option>
-                        <option value="creation_date">Date: Newest First</option>
+                        <option value="creation_date">Date: Oldest First</option>
+                        <option value="-creation_date">Date: Newest First</option>
                         <option value="-priority">Priority: High to Low</option>
                         <option value="priority">Priority: Low to High</option>
-                        <option value="status">Status: Open First</option>
-                        <option value="-status">Status: Closed First</option>
+                        <option value="-status">Status: Open First</option>
+                        <option value="status">Status: Closed First</option>
                     </select>
                 </div>
                 <table class="shadow table-hover table-striped table-bordered table mt-2 rounded">
@@ -125,12 +125,18 @@
                         {% for ticket in tickets %}
                         <tr>
                             <th><a href="{% url 'details' ticket.id %}">{{ticket.id}}</a></th>
-                            <td><span class="badge bg-secondary rounded-pill text-light">{{ticket.get_priority_display}}</span></td>
+                            {% if ticket.get_priority_display == 'Low' %}
+                            <td><span class="badge bg-primary rounded-pill text-light">{{ticket.get_priority_display}}</span></td>
+                            {% elif ticket.get_priority_display == 'Medium' %}
+                            <td><span class="badge bg-warning rounded-pill text-light">{{ticket.get_priority_display}}</span></td>
+                            {% elif ticket.get_priority_display == 'High' %}
+                            <td><span class="badge bg-danger rounded-pill text-light">{{ticket.get_priority_display}}</span></td>
+                            {% endif %}
                             <td>{{ ticket.title }}</td>
                             {% if ticket.status == 'CLOSED' %}
                                 <td><span class="badge rounded-pill bg-secondary">{{ticket.status}}<span></td>
                             {% else %}
-                                <td><span class="badge rounded-pill bg-primary">{{ticket.status}}<span></td>
+                                <td><span class="badge rounded-pill bg-success">{{ticket.status}}<span></td>
                             {% endif %}
                             <td>{{ ticket.owner}}</td>
                             <td>
