@@ -44,10 +44,13 @@
             </ul>
             {% endif %}
 
-            <!-- controls above table -->
-            <div class="d-flex justify-content-between align-items-end text-light">
+            <!-- buttons above table -->
+            <div class="d-flex align-items-end text-light" style="gap: 10px;">
                 <button type="button" class="btn btn-primary flex-grow" data-bs-toggle="modal" data-bs-target="#newTicketModal">
                     + New Ticket
+                </button>
+                <button type="button" class="btn btn-primary flex-grow" data-bs-toggle="modal" data-bs-target="#newTicketModal">
+                    Reports
                 </button>
             </div>
 
@@ -90,14 +93,20 @@
 
             <!-- Ticket Management Table -->
             <div class="table-responsive container border border-opacity-0 bg-light rounded p-4 mt-2">
-                <div class="d-flex justify-content-end align-items-center gap-2">
-                    <div class="form-check">
+                <div class="d-flex justify-content-end align-content-center gap-4 mb-4">
+                    <div class="input-group flex-fill">
+                        <input type="text" class="form-control" placeholder="Search by ticket ID or name..." aria-label="search-box" aria-describedby="button-addon2">
+                        <button class="btn btn-primary" type="button" id="button-addon2">Search</button>
+                      </div>
+                    
+                      <div class="form-check flex-fill">
                         <input class="form-check-input" type="checkbox" value="" id="hide-closed-filter" onchange="handleHideClosedTickets(this);">
                         <label class="form-check-label" for="hide-closed-filter">
-                            Hide Closed Tickets
+                            <small>Hide Closed Tickets</small>
                         </label>
                     </div>
-                    <select id="sort-select-box" class="form-select form-select-sm w-25" aria-label=".form-select-sm example" onchange="updateSort()">
+
+                    <select id="sort-select-box" class="form-select form-select-sm w-25 flex-fill" aria-label=".form-select-sm example" onchange="updateSort()">
                         <option value="default" selected>Sort</option>
                         <option value="creation_date">Date: Oldest First</option>
                         <option value="-creation_date">Date: Newest First</option>
@@ -113,7 +122,7 @@
                     <tr>
                         <th scope="col">ID</th>
                         <th scope="col">Priority</th>
-                        <th scope="col">Subject</th>
+                        <th scope="col">Title</th>
                         <th scope="col">Status</th>
                         <th scope="col">Owner</th>
                         <th scope="col">Created On</th>

@@ -74,12 +74,12 @@ def open(request, pk):
             if form.is_valid():
                 form.save()
                 messages.add_message(request, messages.SUCCESS, 'You have successfully reopened ticket #{id}'.format(id = ticket.id))
-                return redirect('/tickets/details/{id}'.format(id = pk))
+                return HttpResponseRedirect('/tickets/details/{id}'.format(id = pk))
             else:
                 messages.add_message(request, messages.WARNING, 'Error reopening ticket #{id}'.format(id = ticket.id))
-                return redirect('/tickets/details/{id}'.format(id = pk))
+                return HttpResponseRedirect('/tickets/details/{id}'.format(id = pk))
         else:
-            return redirect('/tickets/details/{id}'.format(id = pk))
+            return HttpResponseRedirect('/tickets/details/{id}'.format(id = pk))
 
 #/tickets/close/{id}
 @login_required
@@ -97,13 +97,13 @@ def close(request, pk):
             if form.is_valid():
                 form.save()
                 messages.add_message(request, messages.SUCCESS, 'You have successfully closed ticket {id}'.format(id = ticket.id))
-                return redirect('/tickets/details/{id}'.format(id = pk))
+                return HttpResponseRedirect('/tickets/details/{id}'.format(id = pk))
             else:
-                return redirect('/tickets/details/{id}'.format(id = pk))
+                return HttpResponseRedirect('/tickets/details/{id}'.format(id = pk))
         else:
             messages.add_message(request, messages.INFO, 'Error closing ticket - You cannot close a ticket owned by someone else.')
-            return redirect('/tickets/details/{id}'.format(id = pk))
-    return redirect('/')
+            return HttpResponseRedirect('/tickets/details/{id}'.format(id = pk))
+    return HttpResponseRedirect('/')
 
 @login_required
 def comment(request, pk):
@@ -111,7 +111,7 @@ def comment(request, pk):
         ticket = Ticket.objects.get(pk=pk)
         if ticket.status == "CLOSED":
             messages.add_message(request, messages.WARNING, 'You tried commenting on a closed ticket.')
-            return redirect('/tickets/details/{id}'.format(id = pk))
+            return HttpResponseRedirect('/tickets/details/{id}'.format(id = pk))
         else:
             comment = Comment()
             comment.owner = request.user
@@ -120,11 +120,11 @@ def comment(request, pk):
             if form.is_valid():
                 form.save()
                 messages.add_message(request, messages.SUCCESS, 'Success! Your comment has been added.')
-                return redirect('/tickets/details/{id}'.format(id = pk))
+                return HttpResponseRedirect('/tickets/details/{id}'.format(id = pk))
             else:
                 messages.add_message(request, messages.WARNING, 'There was an error posting your comment.')
-                return redirect('/tickets/details/{id}'.format(id = pk))
-    return redirect('/')
+                return HttpResponseRedirect('/tickets/details/{id}'.format(id = pk))
+    return HttpResponseRedirect('/')
 
 @login_required
 def delete(request, pk):
@@ -133,8 +133,8 @@ def delete(request, pk):
         if ticket.owner == request.user:
             messages.add_message(request, messages.SUCCESS, "Success! Ticket #{pk} has been deleted!".format(pk = ticket.id))
             ticket.delete()
-            return redirect('/')
+            return HttpResponseRedirect('/')
         else:
             messages.add_message(request, messages.INFO, 'Error deleting ticket. You can only delete tickets you have created.')
-            return redirect('/')
-    return redirect('/')
+            return HttpResponseRedirect('/')
+    return HttpResponseRedirect('/')
