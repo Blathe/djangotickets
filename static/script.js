@@ -17,12 +17,6 @@ function setupSessions() {
     } else {
         sessionStorage.removeItem('sortSelection');
     }
-
-    //only show our "clear search results" button if we've actually searched anything
-    //TODO: Make this so it only appears if we actually get some results... rather than being based on if we have done a search
-    if (urlParams.has('search')) {
-        document.getElementById('clear-search-results-btn').style.visibility = "visible";
-    }
 }
 
 function updateSort() {

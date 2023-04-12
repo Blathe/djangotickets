@@ -46,7 +46,7 @@
             {% endif %}
 
             <!-- buttons above table -->
-            <div class="d-flex align-items-end text-light" style="gap: 10px;">
+            <div class="d-flex mb-3 align-items-end text-light" style="gap: 10px;">
                 <button type="button" class="btn btn-primary flex-grow" data-bs-toggle="modal" data-bs-target="#newTicketModal">
                     <i class="bi bi-plus-square-fill"></i> New Ticket
                 </button>
@@ -63,7 +63,6 @@
                     <li><a class="dropdown-item" href="#">Separated link</a></li>
                     </ul>
                 </div>
-  
             </div>
 
             <!-- New Ticket Modal -->
@@ -184,7 +183,9 @@
                     </tbody>
                 </table>
 
-                <a style="visibility: hidden;" id="clear-search-results-btn" href="/" class="btn btn-primary float-end">Clear Search Results</a>
+                {% if search_results == True %}
+                    <a id="clear-search-results-btn" href="/" class="btn btn-primary float-end">Clear Search Results</a>
+                {% endif %}
             </div>
             {% endif %}
             <script src="{% static 'script.js' %}" />

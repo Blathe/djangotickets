@@ -17,6 +17,7 @@ def index(request):
                 query = request.GET.get('search')
                 #double check to make sure the query exists
                 if (query is not None):
+                    search_results = False
                     #check if the query is only a digit (int), if not throw the user a message and load all tickets.
                     if (query.isdigit() is not True):
                         messages.add_message(request, messages.WARNING, 'Enter a valid ticket number and try again (numbers only).')
@@ -25,13 +26,15 @@ def index(request):
                 
                     #grab all tickets and filter to grab any with a ticket number that matches the query
                     tickets = Ticket.objects.filter(id=query)
+                    search_results = True
                     
                     #if the filtered ticket count is 0, send a warning message that the ticket wasn't found and load all tickets.
                     if (tickets.count() == 0):
                         messages.add_message(request, messages.WARNING, 'No tickets found for ticket id: {search}.'.format(search=query))
                         tickets = Ticket.objects.all()
+                        search_results = False
                     
-                    return render(request, 'tickets/index.html', {'tickets':tickets})
+                    return render(request, 'tickets/index.html', {'tickets':tickets, "search_results":search_results})
             else:
                 tickets = Ticket.objects.all()
                 if request.GET.get('filters') is not None or request.GET.get('sort') is not None:
