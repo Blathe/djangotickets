@@ -13,28 +13,51 @@ from .models import Ticket, Comment
 def index(request):
     if request.method == "GET":
         if request.user.is_authenticated:
-            tickets = Ticket.objects.all()
-            
-            if request.GET.get('filters') is not None or request.GET.get('sort') is not None:
-                filters = request.GET.get('filters')
-                sort = request.GET.get('sort')
+            if request.GET.get('search') is not None:
+                query = request.GET.get('search')
+                #double check to make sure the query exists
+                if (query is not None):
+                    search_results = False
+                    #check if the query is only a digit (int), if not throw the user a message and load all tickets.
+                    if (query.isdigit() is not True):
+                        messages.add_message(request, messages.WARNING, 'Enter a valid ticket number and try again (numbers only).')
+                        tickets = Ticket.objects.all()
+                        return render(request, 'tickets/index.html', {'tickets':tickets})
                 
-                if (filters is not None):
-                        tickets = tickets.filter(status = 'OPEN')
-                if (sort is not None):
-                    if (sort == "default"):
-                        tickets = tickets.order_by("creation_date")
-                    else:
-                        tickets = tickets.order_by(sort)
-               
+                    #grab all tickets and filter to grab any with a ticket number that matches the query
+                    tickets = Ticket.objects.filter(id=query)
+                    search_results = True
+                    
+                    #if the filtered ticket count is 0, send a warning message that the ticket wasn't found and load all tickets.
+                    if (tickets.count() == 0):
+                        messages.add_message(request, messages.WARNING, 'No tickets found for ticket id: {search}.'.format(search=query))
+                        tickets = Ticket.objects.all()
+                        search_results = False
+                    
+                    return render(request, 'tickets/index.html', {'tickets':tickets, "search_results":search_results})
+            else:
+                tickets = Ticket.objects.all()
+                if request.GET.get('filters') is not None or request.GET.get('sort') is not None:
+                    filters = request.GET.get('filters')
+                    sort = request.GET.get('sort')
+                    
+                    if (filters is not None):
+                            tickets = tickets.filter(status = 'OPEN')
+                    if (sort is not None):
+                        if (sort == "default"):
+                            tickets = tickets.order_by("creation_date")
+                        else:
+                            tickets = tickets.order_by(sort)
+                        
+                    return render(request, 'tickets/index.html', {'tickets':tickets})
+                else:    
+                    tickets = Ticket.objects.order_by('creation_date')
                 return render(request, 'tickets/index.html', {'tickets':tickets})
-            else:    
-                tickets = Ticket.objects.order_by('creation_date')
-                return render(request, 'tickets/index.html', {'tickets':tickets})
-    return render(request, 'tickets/index.html')
-    
+    return render(request, 'tickets/index.html')       
+            
 #ticket details page
 #/tickets/details/{id}
+@login_required
 def details(request, pk):
     if request.method == "GET":
         if request.user.is_authenticated:
@@ -74,12 +97,12 @@ def open(request, pk):
             if form.is_valid():
                 form.save()
                 messages.add_message(request, messages.SUCCESS, 'You have successfully reopened ticket #{id}'.format(id = ticket.id))
-                return redirect('/tickets/details/{id}'.format(id = pk))
+                return HttpResponseRedirect('/tickets/details/{id}'.format(id = pk))
             else:
                 messages.add_message(request, messages.WARNING, 'Error reopening ticket #{id}'.format(id = ticket.id))
-                return redirect('/tickets/details/{id}'.format(id = pk))
+                return HttpResponseRedirect('/tickets/details/{id}'.format(id = pk))
         else:
-            return redirect('/tickets/details/{id}'.format(id = pk))
+            return HttpResponseRedirect('/tickets/details/{id}'.format(id = pk))
 
 #/tickets/close/{id}
 @login_required
@@ -97,13 +120,13 @@ def close(request, pk):
             if form.is_valid():
                 form.save()
                 messages.add_message(request, messages.SUCCESS, 'You have successfully closed ticket {id}'.format(id = ticket.id))
-                return redirect('/tickets/details/{id}'.format(id = pk))
+                return HttpResponseRedirect('/tickets/details/{id}'.format(id = pk))
             else:
-                return redirect('/tickets/details/{id}'.format(id = pk))
+                return HttpResponseRedirect('/tickets/details/{id}'.format(id = pk))
         else:
             messages.add_message(request, messages.INFO, 'Error closing ticket - You cannot close a ticket owned by someone else.')
-            return redirect('/tickets/details/{id}'.format(id = pk))
-    return redirect('/')
+            return HttpResponseRedirect('/tickets/details/{id}'.format(id = pk))
+    return HttpResponseRedirect('/')
 
 @login_required
 def comment(request, pk):
@@ -111,7 +134,7 @@ def comment(request, pk):
         ticket = Ticket.objects.get(pk=pk)
         if ticket.status == "CLOSED":
             messages.add_message(request, messages.WARNING, 'You tried commenting on a closed ticket.')
-            return redirect('/tickets/details/{id}'.format(id = pk))
+            return HttpResponseRedirect('/tickets/details/{id}'.format(id = pk))
         else:
             comment = Comment()
             comment.owner = request.user
@@ -120,11 +143,11 @@ def comment(request, pk):
             if form.is_valid():
                 form.save()
                 messages.add_message(request, messages.SUCCESS, 'Success! Your comment has been added.')
-                return redirect('/tickets/details/{id}'.format(id = pk))
+                return HttpResponseRedirect('/tickets/details/{id}'.format(id = pk))
             else:
                 messages.add_message(request, messages.WARNING, 'There was an error posting your comment.')
-                return redirect('/tickets/details/{id}'.format(id = pk))
-    return redirect('/')
+                return HttpResponseRedirect('/tickets/details/{id}'.format(id = pk))
+    return HttpResponseRedirect('/')
 
 @login_required
 def delete(request, pk):
@@ -133,8 +156,8 @@ def delete(request, pk):
         if ticket.owner == request.user:
             messages.add_message(request, messages.SUCCESS, "Success! Ticket #{pk} has been deleted!".format(pk = ticket.id))
             ticket.delete()
-            return redirect('/')
+            return HttpResponseRedirect('/')
         else:
             messages.add_message(request, messages.INFO, 'Error deleting ticket. You can only delete tickets you have created.')
-            return redirect('/')
-    return redirect('/')
+            return HttpResponseRedirect('/')
+    return HttpResponseRedirect('/')
