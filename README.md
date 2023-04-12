@@ -3,7 +3,7 @@ A simple ticket manager made with Django, Bootstrap, and a Postgresql database.
 
 By no means does this include best practices, but it gets a simple project started.
 
-![Alt Text](https://i.postimg.cc/mzKFfh2w/Screenshot-2023-04-11-204628.jpg)
+![Alt Text](https://i.postimg.cc/6qpVZGkD/Screenshot-2023-04-11-204628.jpg)
 
 ![Alt Text](https://i.postimg.cc/x8pv31Yq/Screenshot-2023-04-11-204722.jpg)
 
