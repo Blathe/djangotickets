@@ -5,6 +5,7 @@ var sortSelectionBox = document.getElementById('sort-select-box');
 
 setupSessions()
 
+//Set up our session storage information for filters and sorting (checkboxes, drop downs, etc.) so they persist through refreshes.
 function setupSessions() {
     if (urlParams.has('filters')) {
         hideClosedFilterCheckbox.checked = sessionStorage.getItem('hideClosedChecked');
@@ -16,10 +17,11 @@ function setupSessions() {
     } else {
         sessionStorage.removeItem('sortSelection');
     }
+
+    //only show our "clear search results" button if we've actually searched anything
+    //TODO: Make this so it only appears if we actually get some results... rather than being based on if we have done a search
     if (urlParams.has('search')) {
         document.getElementById('clear-search-results-btn').style.visibility = "visible";
-    } else {
-        document.getElementById('clear-search-results-btn').style.visibility = "hidden";
     }
 }
 
