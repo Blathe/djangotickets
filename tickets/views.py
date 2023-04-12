@@ -13,28 +13,48 @@ from .models import Ticket, Comment
 def index(request):
     if request.method == "GET":
         if request.user.is_authenticated:
-            tickets = Ticket.objects.all()
-            
-            if request.GET.get('filters') is not None or request.GET.get('sort') is not None:
-                filters = request.GET.get('filters')
-                sort = request.GET.get('sort')
+            if request.GET.get('search') is not None:
+                query = request.GET.get('search')
+                #double check to make sure the query exists
+                if (query is not None):
+                    #check if the query is only a digit (int), if not throw the user a message and load all tickets.
+                    if (query.isdigit() is not True):
+                        messages.add_message(request, messages.WARNING, 'Enter a valid ticket number and try again (numbers only).')
+                        tickets = Ticket.objects.all()
+                        return render(request, 'tickets/index.html', {'tickets':tickets})
                 
-                if (filters is not None):
-                        tickets = tickets.filter(status = 'OPEN')
-                if (sort is not None):
-                    if (sort == "default"):
-                        tickets = tickets.order_by("creation_date")
-                    else:
-                        tickets = tickets.order_by(sort)
-               
+                    #grab all tickets and filter to grab any with a ticket number that matches the query
+                    tickets = Ticket.objects.filter(id=query)
+                    
+                    #if the filtered ticket count is 0, send a warning message that the ticket wasn't found and load all tickets.
+                    if (tickets.count() == 0):
+                        messages.add_message(request, messages.WARNING, 'No tickets found for ticket id: {search}.'.format(search=query))
+                        tickets = Ticket.objects.all()
+                    
+                    return render(request, 'tickets/index.html', {'tickets':tickets})
+            else:
+                tickets = Ticket.objects.all()
+                if request.GET.get('filters') is not None or request.GET.get('sort') is not None:
+                    filters = request.GET.get('filters')
+                    sort = request.GET.get('sort')
+                    
+                    if (filters is not None):
+                            tickets = tickets.filter(status = 'OPEN')
+                    if (sort is not None):
+                        if (sort == "default"):
+                            tickets = tickets.order_by("creation_date")
+                        else:
+                            tickets = tickets.order_by(sort)
+                        
+                    return render(request, 'tickets/index.html', {'tickets':tickets})
+                else:    
+                    tickets = Ticket.objects.order_by('creation_date')
                 return render(request, 'tickets/index.html', {'tickets':tickets})
-            else:    
-                tickets = Ticket.objects.order_by('creation_date')
-                return render(request, 'tickets/index.html', {'tickets':tickets})
-    return render(request, 'tickets/index.html')
-    
+    return render(request, 'tickets/index.html')       
+            
 #ticket details page
 #/tickets/details/{id}
+@login_required
 def details(request, pk):
     if request.method == "GET":
         if request.user.is_authenticated:
