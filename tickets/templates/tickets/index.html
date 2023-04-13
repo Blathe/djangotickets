@@ -192,6 +192,47 @@
             <div class="container text-center text-light mt-5 font-size-lg">
                 <h2>Django Ticket Manager</h2>
                 <p>Log in with guest credentials above to view and manage tickets.</p>
+
+                <div class="container py-5 h-100">
+                    <div class="row d-flex justify-content-center align-items-center h-100">
+                      <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+                        <div class="card bg-black text-white" style="border-radius: 1rem;">
+                          <div class="card-body p-5 text-center">
+                
+                            <div class="mb-md-4 mt-md-4 pb-5">
+                                <form role="login" action="{% url 'login' %}" method="post">
+                                    {% csrf_token %}
+                                    <h2 class="fw-bold mb-2 text-uppercase">Login</h2>
+                                    <p class="text-white-50 mb-5">Please enter your username and password</p>
+                        
+                                    <div class="form-outline form-success mb-4">
+                                        <input type="text" id="username_login" name="username" class="form-control form-control-lg" />
+                                        <label class="form-label" for="username_login">Username</label>
+                                    </div>
+                        
+                                    <div class="form-outline form-success mb-4">
+                                        <input type="password" id="password_login" name="password" class="form-control form-control-lg" />
+                                        <label class="form-label" for="password_login">Password</label>
+                                    </div>
+                        
+                                    <button class="btn btn-outline-success btn-lg px-5" type="submit">Login</button>
+                                </form>
+
+                              <p class="fs-2 my-4">OR</p>
+                                <form  role="login" action="{% url 'login' %}" method="post">
+                                    {% csrf_token %}
+                                    <input hidden id="username" name="username" value="guest"/>
+                                    <input hidden id="password" name="password" value="guestpassword123"/>
+                                    <button class="btn btn-outline-success btn-lg px-5" type="submit">Login As Guest</button>
+                                    <p class="small m-0">No account required</p>
+                                </form>
+                            </div>
+                
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
             </div>
         {% endif %}
     </div>
