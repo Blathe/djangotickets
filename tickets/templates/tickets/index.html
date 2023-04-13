@@ -25,7 +25,11 @@
             </form>
             {% else %}
             <div class="d-flex gap-4 align-items-center">
+                {% if user.first_name %}
+                <h4 class="text-light float-right">Hello, {{ user.first_name }}</h4>
+                {% else %}
                 <h4 class="text-light float-right">Hello, {{ user.username }}</h4>
+                {% endif %}
                 <form class="d-flex" role="logout" action="{% url 'logout' %}" method="post">
                     {% csrf_token %}
                     <button class="btn btn-danger" type="submit">Logout</button>
