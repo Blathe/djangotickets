@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
+from django.core.paginator import Paginator
 
 from .forms import TicketForm, CommentForm
 
@@ -53,7 +54,12 @@ def index(request):
                     return render(request, 'tickets/index.html', {'tickets':tickets})
                 else:    
                     tickets = Ticket.objects.order_by('creation_date')
-                return render(request, 'tickets/index.html', {'tickets':tickets})
+
+                paginator = Paginator(tickets, 5)
+                page_number = request.GET.get('page')
+                page_obj = paginator.get_page(page_number)
+
+                return render(request, 'tickets/index.html', {'tickets':tickets, 'page_obj': page_obj})
     return render(request, 'tickets/index.html')       
 
 def user_login(request):
