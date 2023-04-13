@@ -213,8 +213,10 @@
                             <div class="mb-md-4 mt-md-4 pb-5">
                                 <form role="login" action="{% url 'login' %}" method="post">
                                     {% csrf_token %}
-                                    {% if form.errors %}
-                                        <p>Your username and password didn't match. Please try again.</p>
+                                    {% if messages %}
+                                        {% for message in messages %}
+                                            <p {% if message.tags %} class="alert alert-danger" {% endif %}>{{ message }}</p>
+                                        {% endfor %}
                                     {% endif %}
                                     <h2 class="fw-bold mb-2 text-uppercase">Login</h2>
                                     <p class="text-white-50 mb-5">Please enter your username and password</p>

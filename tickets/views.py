@@ -2,6 +2,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login
 
 from .forms import TicketForm, CommentForm
 
@@ -54,7 +55,19 @@ def index(request):
                     tickets = Ticket.objects.order_by('creation_date')
                 return render(request, 'tickets/index.html', {'tickets':tickets})
     return render(request, 'tickets/index.html')       
-            
+
+def user_login(request):
+    if request.method == "POST":
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return HttpResponseRedirect('/')
+        else:
+            messages.add_message(request, messages.INFO, 'Error authenticating user. Check login credentials and try again.')
+            return HttpResponseRedirect('/')
+        
 #ticket details page
 #/tickets/details/{id}
 @login_required
