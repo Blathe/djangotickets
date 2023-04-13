@@ -20,6 +20,7 @@ load_dotenv()
 
 IS_HEROKU = "DYNO" in os.environ
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -43,6 +44,7 @@ else:
 
 if IS_HEROKU:
     ALLOWED_HOSTS = ["*"]
+    SECURE_SSL_REDIRECT = True
 else:
     ALLOWED_HOSTS = []
 
