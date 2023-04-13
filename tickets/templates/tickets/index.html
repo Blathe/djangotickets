@@ -13,8 +13,9 @@
     <title>Django Ticket Manager</title>
 </head>
 
-<body class="bg-dark">
-    <nav class="nav navbar bg-black">
+<body class="vh-100">
+    
+    <nav class="nav navbar bg-black border-bottom border-secondary-subtle position-absolute vw-100">
         <div class="container-fluid d-flex">
             <a href="/" class="navbar-brand text-light">Django Ticket Manager</a>
             {% if not user.is_authenticated %}
@@ -39,9 +40,140 @@
             {% endif %}
         </div>
     </nav>
+    
+    {% if user.is_authenticated %}
+    <div class="d-flex flex-row">
 
-    <div class="container mt-4">
-        {% if user.is_authenticated %}
+        <div style="padding: 4.5rem 1rem 1rem 1rem;" class="col-2 vh-100 bg-light d-flex flex-column border-end border-secondary-subtle gap-4">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <h3 class="text-black fs-4">Tickets</h3>
+                <button type="button" class="btn btn-primary flex-grow" data-bs-toggle="modal" data-bs-target="#newTicketModal">
+                    <i class="bi bi-plus"></i> Create Ticket
+                </button>
+            </div>
+
+            <div class="input-group d-flex mb-4">
+                <input id="search-box" type="text" class="form-control" placeholder="Search by ticket #" aria-label="search-box" aria-describedby="button-addon2">
+                <button class="btn btn-primary" type="button" id="button-addon2" onclick="handleSearch()"><i class="bi bi-search"></i></button>
+            </div>
+
+            <div class="mt-4 d-flex flex-column gap-2">
+                <a href="#" class="text-decoration-none link-secondary"><strong>All Tickets</strong></a>
+                <div class="d-flex justify-content-between align-items-center flex-row">
+                <a href="#" class="text-decoration-none link-secondary"><strong>Open Tickets</strong></a>
+                <span class="badge bg-secondary text-white">5</span>
+                </div>
+            </div>
+
+            <div class="mt-4 d-flex flex-column gap-2">
+                <p class="text-body-tertiary m-0 fs-6 text-uppercase fw-medium">Statuses</p>
+                <a href="#" class="text-decoration-none link-secondary"><strong>Open</strong></a>
+                <div class="d-flex justify-content-between align-items-center flex-row">
+                    <a href="#" class="text-decoration-none link-secondary"><strong>Closed</strong></a>
+                    <span class="badge bg-secondary text-white">5</span>
+                </div>
+            </div>
+
+            <div class="mt-4 d-flex flex-column gap-2">
+                <p class="text-body-tertiary m-0 fs-6 text-uppercase fw-medium">Priorities</p>
+                <a href="#" class="text-decoration-none link-secondary"><strong>Low</strong></a>
+                <div class="d-flex justify-content-between align-items-center flex-row">
+                    <a href="#" class="text-decoration-none link-secondary"><strong>Medium</strong></a>
+                    <span class="badge bg-secondary text-white">5</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center flex-row">
+                    <a href="#" class="text-decoration-none link-secondary"><strong>High</strong></a>
+                    <span class="badge bg-secondary text-white">5</span>
+                </div>
+                
+            </div>
+        </div>
+
+        <div class="w-100" style="padding-top: 60px;">
+            <div class="d-flex flex-row justify-content-center p-3 border-bottom border-secondary-subtle">
+                <h3>All Tickets</h3>
+            </div>
+            <div class="d-flex flex-row justify-content-between align-items-end px-3 py-1 border-bottom border-secondary-subtle mb-0">
+                <p class="m-0">105 tickets</p>
+                <ul class="pagination pagination-sm justify-content-end m-0">
+                    <li class="page-item disabled">
+                      <a class="page-link">Previous</a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                      <a class="page-link" href="#">Next</a>
+                    </li>
+                  </ul>
+            </div>
+            <table class="shadow table-hover table-bordered table table-hover">
+                <thead>
+                <tr>
+                    <th scope="col-1">#</th>
+                    <th scope="col">Priority</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Owner</th>
+                    <th scope="col">Created On</th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                {% if tickets %}
+                <tbody>
+                    {% for ticket in tickets %}
+                    <tr>
+                        <th><a href="{% url 'details' ticket.id %}">{{ticket.id}}</a></th>
+                        {% if ticket.get_priority_display == 'Low' %}
+                        <td><span class="badge bg-primary-subtle text-primary-emphasis">{{ticket.get_priority_display}}</span></td>
+                        {% elif ticket.get_priority_display == 'Medium' %}
+                        <td><span class="badge bg-warning-subtle text-warning-emphasis">{{ticket.get_priority_display}}</span></td>
+                        {% elif ticket.get_priority_display == 'High' %}
+                        <td><span class="badge bg-danger-subtle text-danger-emphasis">{{ticket.get_priority_display}}</span></td>
+                        {% endif %}
+                        <td class="text-truncate">{{ ticket.title }}</td>
+                        {% if ticket.status == 'CLOSED' %}
+                            <td><span class="badge bg-secondary-subtle text-secondary-emphasis">{{ticket.status}}<span></td>
+                        {% else %}
+                            <td><span class="badge bg-primary-subtle text-primary-emphasis">{{ticket.status}}<span></td>
+                        {% endif %}
+                        {% if ticket.owner.get_full_name %}
+                        <td>{{ ticket.owner.get_full_name}}</td>
+                        {% else %}
+                        <td>{{ ticket.owner}}</td>
+                        {% endif %}
+                        <td>
+                            {% load tz %}
+                            {{ ticket.creation_date | utc | date }}
+                        </td>
+                        <td class="d-flex gap-3">
+                            <button type="button" class="btn btn-white border-0 outline-0" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-three-dots"></i>
+                              </button>
+                              <ul class="dropdown-menu">
+                                <li><a class="dropdown-item btn" href="{% url 'details' ticket.id %}">Details</a></li>
+                                <li><a class="dropdown-item" href="#">
+                                    <form class="d-flex" role="delete" action="{% url 'delete' ticket.id %}" method="get" onsubmit="return confirm('Do you really want to delete this ticket?');">
+                                        {% csrf_token %}
+                                        <button class="btn" type="submit">Delete</button>
+                                    </form>
+                                </a></li>
+                                <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#">Separated link</a></li>
+                              </ul>
+                            
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                {% endif %}
+            </table>
+        </div>
+
+    </div>
+
+    {% comment %} <div class="container mt-4">
 
             {% if messages %}
             <ul style="margin: 0; padding: 0;">
@@ -251,8 +383,8 @@
                     </div>
                   </div>
             </div>
-        {% endif %}
-    </div>
+    </div> {% endcomment %}
+    {% endif %}
 </body>
 
 <!--
