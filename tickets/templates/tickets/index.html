@@ -167,7 +167,11 @@
                                 {% else %}
                                     <td><span class="badge rounded-pill bg-success">{{ticket.status}}<span></td>
                                 {% endif %}
+                                {% if ticket.owner.get_full_name %}
+                                <td>{{ ticket.owner.get_full_name}}</td>
+                                {% else %}
                                 <td>{{ ticket.owner}}</td>
+                                {% endif %}
                                 <td>
                                     {% load tz %}
                                     {{ ticket.creation_date | utc | date }}
