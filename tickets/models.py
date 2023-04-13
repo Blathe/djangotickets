@@ -35,3 +35,6 @@ class Comment(models.Model):
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)
     body = models.CharField(max_length=400)
     tag = models.CharField(choices=TAG_CHOICES, max_length=20, default="DEFAULT")
+    
+    def __str__(self):
+        return f"{self.id} - Owner: {self.owner} | Ticket: {self.ticket.id} -- {self.body}"

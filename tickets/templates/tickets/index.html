@@ -25,7 +25,11 @@
             </form>
             {% else %}
             <div class="d-flex gap-4 align-items-center">
+                {% if user.first_name %}
+                <h4 class="text-light float-right">Hello, {{ user.first_name }}</h4>
+                {% else %}
                 <h4 class="text-light float-right">Hello, {{ user.username }}</h4>
+                {% endif %}
                 <form class="d-flex" role="logout" action="{% url 'logout' %}" method="post">
                     {% csrf_token %}
                     <button class="btn btn-danger" type="submit">Logout</button>
@@ -163,7 +167,11 @@
                                 {% else %}
                                     <td><span class="badge rounded-pill bg-success">{{ticket.status}}<span></td>
                                 {% endif %}
+                                {% if ticket.owner.get_full_name %}
+                                <td>{{ ticket.owner.get_full_name}}</td>
+                                {% else %}
                                 <td>{{ ticket.owner}}</td>
+                                {% endif %}
                                 <td>
                                     {% load tz %}
                                     {{ ticket.creation_date | utc | date }}
