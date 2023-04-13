@@ -133,9 +133,9 @@
                         <td><span class="badge bg-danger-subtle text-danger-emphasis">{{ticket.get_priority_display}}</span></td>
                         {% endif %}
                         {% if ticket.status == 'CLOSED' %}
-                            <td><span class="badge bg-secondary-subtle text-secondary-emphasis">{{ticket.status}}<span></td>
+                            <td><span class="badge bg-black text-light">{{ticket.status}}<span></td>
                         {% else %}
-                            <td><span class="badge bg-primary-subtle text-primary-emphasis">{{ticket.status}}<span></td>
+                            <td><span class="badge bg-primary text-light">{{ticket.status}}<span></td>
                         {% endif %}
                         {% if ticket.owner.get_full_name %}
                         <td>{{ ticket.owner.get_full_name}}</td>
