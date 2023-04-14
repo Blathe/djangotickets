@@ -46,3 +46,16 @@ function handleSearch() {
         window.location.search = urlParams;
     }
 }
+
+//Code thanks to PotatoParser
+//https://stackoverflow.com/questions/63515279/how-to-initialize-toasts-with-javascript-in-bootstrap-5
+//TODO: Customize this a bit more so that we can use toasts for other things, right now they are only use for alerts
+window.onload = (event) => {
+    var toastElList = [].slice.call(document.querySelectorAll('.toast'))
+    var toastList = toastElList.map(function(toastEl) {
+        // Creates an array of initialized Toats
+        return new bootstrap.Toast(toastEl)
+    });
+    toastList.forEach(toast => toast.show()); // show the toast
+
+}
