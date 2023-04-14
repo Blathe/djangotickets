@@ -60,6 +60,8 @@ def index(request):
                 page_obj = paginator.get_page(page_number)
 
                 return render(request, 'tickets/index.html', {'tickets':tickets, 'page_obj': page_obj})
+        else:
+            return HttpResponseRedirect('/login')
     return render(request, 'tickets/index.html')       
 
 def user_login(request):
@@ -73,6 +75,11 @@ def user_login(request):
         else:
             messages.add_message(request, messages.INFO, 'Error authenticating user. Check login credentials and try again.')
             return HttpResponseRedirect('/')
+    if request.method == "GET":
+        if request.user.is_authenticated:
+            return HttpResponseRedirect('/')
+        else:
+            return render(request, 'tickets/login.html')
         
 #ticket details page
 #/tickets/details/{id}

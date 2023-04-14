@@ -1,0 +1,471 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous"> -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.4/font/bootstrap-icons.css">
+    <link rel="shortcut icon" href="{%  static 'favicon.ico' %}">
+    <title>Django Ticket Manager - Login</title>
+</head>
+
+<body class="vh-100">
+    
+    {% if user.is_authenticated %}
+    <div class="d-flex flex-row">
+
+        <div style="padding: 4.5rem 1rem 1rem 1rem;" class="col-2 vh-100 bg-light d-flex flex-column border-end border-secondary-subtle gap-4">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <h3 class="text-black fs-4">Tickets</h3>
+                <button type="button" class="btn btn-primary flex-grow" data-bs-toggle="modal" data-bs-target="#newTicketModal">
+                    <i class="bi bi-plus"></i> Create Ticket
+                </button>
+            </div>
+
+            <!-- New Ticket Modal -->
+            <div class="modal modal-xl fade" id="newTicketModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="newTicketModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h5 class="modal-title" id="newTicketModalLabel">Create New Ticket</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form role="create" action="{% url 'create' %}" method="post">
+                        <div class="modal-body">
+                            {% csrf_token %}
+                            <div class="form-floating mb-4">
+                                <input required type="text" class="form-control" id="title" name="title" placeholder="ticket title">
+                                <label for="title" class="form-label">Ticket Title</label>
+                              </div>
+                              <div class="form-floating mb-4">
+                                <textarea required style="height: 200px;" class="form-control" id="description" name="description" placeholder="description"></textarea>
+                                <label for="description" class="form-label">Ticket Description:</label>
+                              </div>
+                              <div class="form-floating mb-4">
+                                <select class="form-select form-select mb-3" aria-label="priority selection" id="priority" name="priority">
+                                    <option value="1">Low</option>
+                                    <option value="2">Medium</option>
+                                    <option value="3">High</option>
+                                </select>
+                                <label for="priority" class="form-label">Ticket Priority</label>
+                              </div>
+                        </div>
+                        <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-success">Save Ticket</button>
+                        </div>
+                    </form>
+                </div>
+                </div>
+            </div>
+
+            <div class="input-group d-flex mb-4">
+                <input id="search-box" type="text" class="form-control" placeholder="Search by ticket #" aria-label="search-box" aria-describedby="search-button">
+                <button class="btn btn-primary" type="button" id="search-button" onclick="handleSearch()"><i class="bi bi-search"></i></button>
+            </div>
+
+            <div class="mt-4 d-flex flex-column gap-2">
+                <a href="#" class="text-decoration-none link-secondary"><strong>All Tickets</strong></a>
+                <div class="d-flex justify-content-between align-items-center flex-row">
+                <a href="#" class="text-decoration-none link-secondary"><strong>Open Tickets</strong></a>
+                <span class="badge bg-secondary text-white">5</span>
+                </div>
+            </div>
+
+            <div class="mt-4 d-flex flex-column gap-2">
+                <p class="text-body-tertiary m-0 fs-6 text-uppercase fw-medium">Statuses</p>
+                <a href="#" class="text-decoration-none link-secondary"><strong>Open</strong></a>
+                <div class="d-flex justify-content-between align-items-center flex-row">
+                    <a href="#" class="text-decoration-none link-secondary"><strong>Closed</strong></a>
+                    <span class="badge bg-secondary text-white">5</span>
+                </div>
+            </div>
+
+            <div class="mt-4 d-flex flex-column gap-2">
+                <p class="text-body-tertiary m-0 fs-6 text-uppercase fw-medium">Priorities</p>
+                <a href="#" class="text-decoration-none link-secondary"><strong>Low</strong></a>
+                <div class="d-flex justify-content-between align-items-center flex-row">
+                    <a href="#" class="text-decoration-none link-secondary"><strong>Medium</strong></a>
+                    <span class="badge bg-secondary text-white">5</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center flex-row">
+                    <a href="#" class="text-decoration-none link-secondary"><strong>High</strong></a>
+                    <span class="badge bg-secondary text-white">5</span>
+                </div>
+                
+            </div>
+        </div>
+
+        <div class="w-100 bg-secondary-subtle" style="padding-top: 60px;">
+            <div class="d-flex flex-row justify-content-center p-3 border-bottom border-secondary-subtle bg-white">
+                <h3>All Tickets</h3>
+            </div>
+            <div class="d-flex flex-row justify-content-between align-items-end px-3 py-1 border-bottom border-secondary-subtle mb-0 bg-white">
+                <p class="m-0">{{ page_obj.paginator.count }} tickets</p>
+                <ul class="pagination pagination-sm justify-content-end m-0">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item disabled">
+                      <a class="page-link">Previous</a>
+                    </li>
+                    {% endif %}
+                    {% for i in page_obj.paginator.page_range %}
+                    <li class="page-item"><a href="/?page={{i}}" class="page-link" href="#">{{ i }}</a></li>
+                    {% endfor %}
+                    {% if page_obj.has_next %}
+                    <li class="page-item disabled">
+                        <a href="" class="page-link">Next</a>
+                      </li>
+                    {% endif %}
+
+                  </ul>
+            </div>
+            <table class="table-light table-hover table-bordered table table-hover">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Priority</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Owner</th>
+                    <th scope="col">Created On</th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                {% if tickets %}
+                <tbody>
+                    {% for ticket in page_obj %}
+                    <tr>
+                        <th scope="row"><a href="{% url 'details' ticket.id %}">{{ticket.id}}</a></th>
+                        <td class="text-truncate">{{ ticket.title }}</td>
+                        {% if ticket.get_priority_display == 'Low' %}
+                        <td><span class="badge bg-primary-subtle text-primary-emphasis">{{ticket.get_priority_display}}</span></td>
+                        {% elif ticket.get_priority_display == 'Medium' %}
+                        <td><span class="badge bg-warning-subtle text-warning-emphasis">{{ticket.get_priority_display}}</span></td>
+                        {% elif ticket.get_priority_display == 'High' %}
+                        <td><span class="badge bg-danger-subtle text-danger-emphasis">{{ticket.get_priority_display}}</span></td>
+                        {% endif %}
+                        {% if ticket.status == 'CLOSED' %}
+                            <td><span class="badge bg-black text-light">{{ticket.status}}<span></td>
+                        {% else %}
+                            <td><span class="badge bg-primary text-light">{{ticket.status}}<span></td>
+                        {% endif %}
+                        {% if ticket.owner.get_full_name %}
+                        <td>{{ ticket.owner.get_full_name}}</td>
+                        {% else %}
+                        <td>{{ ticket.owner}}</td>
+                        {% endif %}
+                        <td>
+                            {% load tz %}
+                            {{ ticket.creation_date | utc | date }}
+                        </td>
+                        <td class="d-flex gap-3">
+                            <button type="button" class="btn btn-white border-0 outline-0" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-three-dots"></i>
+                              </button>
+                              <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{% url 'details' ticket.id %}">Details</a></li>
+                                <li><a class="dropdown-item" href="#">
+                                    <form role="delete" action="{% url 'delete' ticket.id %}" method="get" onsubmit="return confirm('Do you really want to delete this ticket?');">
+                                        {% csrf_token %}
+                                        <i class="bi bi-trash3-fill text-danger"></i> <button class="text-danger btn btn-link text-decoration-none p-0 m-0" type="submit">Delete</button>
+                                    </form>
+                                </a></li>
+                                <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#">Separated link</a></li>
+                              </ul>
+                            
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                {% endif %}
+            </table>
+        </div>
+
+    </div>
+    {% else %}
+    <div style="padding: 4.5rem 1rem 1rem 1rem;" class="vh-100 bg-dark">
+        <div class="container text-center text-light font-size-lg">
+            <h2>Django Ticket Manager</h2>
+            <p>Log in with your credentials below, or log in as a guest to access the ticket manager without registering.</p>
+    
+            <div class="container py-5 h-100">
+                <div class="row d-flex justify-content-center align-items-center h-100">
+                  <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+                    <div class="card bg-black text-white" style="border-radius: 1rem;">
+                      <div class="card-body p-5 text-center">
+            
+                        <div class="mb-md-4 mt-md-4 pb-5">
+                            <form role="login" action="{% url 'login' %}" method="post">
+                                {% csrf_token %}
+                                {% if messages %}
+                                    {% for message in messages %}
+                                        <p {% if message.tags %} class="alert alert-danger" {% endif %}>{{ message }}</p>
+                                    {% endfor %}
+                                {% endif %}
+                                <h2 class="fw-bold mb-2 text-uppercase">Login</h2>
+                                <p class="text-white-50 mb-5">Please enter your username and password</p>
+                    
+                                <div class="form-outline form-success mb-4">
+                                    <input type="text" id="username_login" name="username" class="form-control form-control-lg" />
+                                    <label class="form-label" for="username_login">Username</label>
+                                </div>
+                    
+                                <div class="form-outline form-success mb-4">
+                                    <input type="password" id="password_login" name="password" class="form-control form-control-lg" />
+                                    <label class="form-label" for="password_login">Password</label>
+                                </div>
+                    
+                                <button class="btn btn-outline-success btn-lg px-5" type="submit">Login</button>
+                            </form>
+    
+                          <p class="fs-2 my-4">OR</p>
+                            <form  role="login" action="{% url 'login' %}" method="post">
+                                {% csrf_token %}
+                                <input hidden id="username" name="username" value="guest"/>
+                                <input hidden id="password" name="password" value="guestpassword123"/>
+                                <button class="btn btn-outline-success btn-lg px-5" type="submit">Login As Guest</button>
+                                <p class="small m-0">No account required</p>
+                            </form>
+                        </div>
+            
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+        </div>
+    </div>
+    
+    {% endif %}
+
+    {% comment %} <div class="container mt-4">
+
+            {% if messages %}
+            <ul style="margin: 0; padding: 0;">
+                {% for message in messages %}
+                    <li style="list-style: none" {% if message.tags %} class="alert alert-{{ message.tags }}" {% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+
+            <!-- buttons above table -->
+            <div class="d-flex mb-3 align-items-end text-light" style="gap: 10px;">
+                <button type="button" class="btn btn-primary flex-grow" data-bs-toggle="modal" data-bs-target="#newTicketModal">
+                    <i class="bi bi-plus-square-fill"></i> New Ticket
+                </button>
+                <!-- Reports Button -->
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    Reports <i class="bi bi-newspaper"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">TODO</a></li>
+                        <li><a class="dropdown-item" href="#">TODO</a></li>
+                        <li><a class="dropdown-item" href="#">TODO</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- New Ticket Modal -->
+            <div class="modal modal-xl fade" id="newTicketModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="newTicketModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h5 class="modal-title" id="newTicketModalLabel">Create New Ticket</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form role="create" action="{% url 'create' %}" method="post">
+                        <div class="modal-body">
+                            {% csrf_token %}
+                            <div class="form-floating mb-4">
+                                <input required type="text" class="form-control" id="title" name="title" placeholder="ticket title">
+                                <label for="title" class="form-label">Ticket Title</label>
+                              </div>
+                              <div class="form-floating mb-4">
+                                <textarea required style="height: 200px;" class="form-control" id="description" name="description" placeholder="description"></textarea>
+                                <label for="description" class="form-label">Ticket Description:</label>
+                              </div>
+                              <div class="form-floating mb-4">
+                                <select class="form-select form-select mb-3" aria-label="priority selection" id="priority" name="priority">
+                                    <option value="1">Low</option>
+                                    <option value="2">Medium</option>
+                                    <option value="3">High</option>
+                                </select>
+                                <label for="priority" class="form-label">Ticket Priority</label>
+                              </div>
+                        </div>
+                        <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-success">Save Ticket</button>
+                        </div>
+                    </form>
+                </div>
+                </div>
+            </div>
+
+            <!-- Ticket Management Table -->
+            <div class="table-responsive container border border-opacity-0 bg-light rounded p-4 mt-2">
+                <div class="input-group d-flex mb-4">
+                    <input id="search-box" type="text" class="form-control" placeholder="Search by ticket #" aria-label="search-box" aria-describedby="button-addon2">
+                    <button class="btn btn-primary" type="button" id="button-addon2" onclick="handleSearch()"><i class="bi bi-search"></i> Search</button>
+                  </div>
+
+                <div class="d-flex justify-content-between align-content-center gap-4 mb-4">
+                      <div class="form-check d-flex align-items-center gap-1">
+                        <input class="form-check-input" type="checkbox" value="" id="hide-closed-filter" onchange="handleHideClosedTickets(this);">
+                        <label class="form-check-label" for="hide-closed-filter">
+                            <small>Hide Closed Tickets</small>
+                        </label>
+                    </div>
+
+                    <select id="sort-select-box" class="form-select form-select-sm w-25" aria-label=".form-select-sm example" onchange="updateSort()">
+                        <option value="default" selected>Sort</option>
+                        <option value="creation_date">Date: Oldest First</option>
+                        <option value="-creation_date">Date: Newest First</option>
+                        <option value="-priority">Priority: High to Low</option>
+                        <option value="priority">Priority: Low to High</option>
+                        <option value="-status">Status: Open First</option>
+                        <option value="status">Status: Closed First</option>
+                    </select>
+                </div>
+
+                <div style="height: 60vh; overflow: scroll;">
+                    <table class="shadow table-hover table-striped table-bordered table mt-2 rounded">
+                        {% if tickets.count == 1 %}
+                        <caption>{{tickets.count}} ticket loaded.</caption>
+                        {% else %}
+                        <caption>{{tickets.count}} ticket loaded.</caption>
+                        {% endif %}
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Priority</th>
+                            <th scope="col">Title</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Owner</th>
+                            <th scope="col">Created On</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                        </thead>
+                        {% if tickets %}
+                        <tbody>
+                            {% for ticket in tickets %}
+                            <tr>
+                                <th><a href="{% url 'details' ticket.id %}">{{ticket.id}}</a></th>
+                                {% if ticket.get_priority_display == 'Low' %}
+                                <td><span class="badge bg-primary-subtle text-primary-emphasis">{{ticket.get_priority_display}}</span></td>
+                                {% elif ticket.get_priority_display == 'Medium' %}
+                                <td><span class="badge bg-warning-subtle text-warning-emphasis">{{ticket.get_priority_display}}</span></td>
+                                {% elif ticket.get_priority_display == 'High' %}
+                                <td><span class="badge bg-danger-subtle text-danger-emphasis">{{ticket.get_priority_display}}</span></td>
+                                {% endif %}
+                                <td class="text-truncate">{{ ticket.title }}</td>
+                                {% if ticket.status == 'CLOSED' %}
+                                    <td><span class="badge bg-secondary-subtle text-secondary-emphasis">{{ticket.status}}<span></td>
+                                {% else %}
+                                    <td><span class="badge bg-primary-subtle text-primary-emphasis">{{ticket.status}}<span></td>
+                                {% endif %}
+                                {% if ticket.owner.get_full_name %}
+                                <td>{{ ticket.owner.get_full_name}}</td>
+                                {% else %}
+                                <td>{{ ticket.owner}}</td>
+                                {% endif %}
+                                <td>
+                                    {% load tz %}
+                                    {{ ticket.creation_date | utc | date }}
+                                </td>
+                                <td class="d-flex gap-3">
+                                    <!-- TODO: put onsubmit code into js file -->
+                                    <a class="btn btn-primary" href="{% url 'details' ticket.id %}">Details</a>
+                                    <form class="d-flex" role="delete" action="{% url 'delete' ticket.id %}" method="get" onsubmit="return confirm('Do you really want to delete this ticket?');">
+                                        {% csrf_token %}
+                                        <button class="btn btn-danger" type="submit">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                {% if search_results == True %}
+                    <a id="clear-search-results-btn" href="/" class="btn btn-primary float-end">Clear Search Results</a>
+                {% endif %}
+            </div>
+
+            <a href="https://github.com/Blathe/djangotickets" target="blank" class="d-flex justify-self-center text-light m-0 fs-1"><i class="bi bi-github"></i></a>
+
+            {% endif %}
+            <script src="{% static 'script.js' %}" />
+        {% else %}
+            <div class="container text-center text-light mt-5 font-size-lg">
+                <h2>Django Ticket Manager</h2>
+                <p>Log in with your credentials below, or log in as a guest to access the ticket manager without registering.</p>
+
+                <div class="container py-5 h-100">
+                    <div class="row d-flex justify-content-center align-items-center h-100">
+                      <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+                        <div class="card bg-black text-white" style="border-radius: 1rem;">
+                          <div class="card-body p-5 text-center">
+                
+                            <div class="mb-md-4 mt-md-4 pb-5">
+                                <form role="login" action="{% url 'login' %}" method="post">
+                                    {% csrf_token %}
+                                    {% if messages %}
+                                        {% for message in messages %}
+                                            <p {% if message.tags %} class="alert alert-danger" {% endif %}>{{ message }}</p>
+                                        {% endfor %}
+                                    {% endif %}
+                                    <h2 class="fw-bold mb-2 text-uppercase">Login</h2>
+                                    <p class="text-white-50 mb-5">Please enter your username and password</p>
+                        
+                                    <div class="form-outline form-success mb-4">
+                                        <input type="text" id="username_login" name="username" class="form-control form-control-lg" />
+                                        <label class="form-label" for="username_login">Username</label>
+                                    </div>
+                        
+                                    <div class="form-outline form-success mb-4">
+                                        <input type="password" id="password_login" name="password" class="form-control form-control-lg" />
+                                        <label class="form-label" for="password_login">Password</label>
+                                    </div>
+                        
+                                    <button class="btn btn-outline-success btn-lg px-5" type="submit">Login</button>
+                                </form>
+
+                              <p class="fs-2 my-4">OR</p>
+                                <form  role="login" action="{% url 'login' %}" method="post">
+                                    {% csrf_token %}
+                                    <input hidden id="username" name="username" value="guest"/>
+                                    <input hidden id="password" name="password" value="guestpassword123"/>
+                                    <button class="btn btn-outline-success btn-lg px-5" type="submit">Login As Guest</button>
+                                    <p class="small m-0">No account required</p>
+                                </form>
+                            </div>
+                
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+            </div>
+    </div> {% endcomment %}
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js" integrity="sha384-zYPOMqeu1DAVkHiLqWBUTcbYfZ8osu1Nd6Z89ify25QV9guujx43ITvfi12/QExE" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.min.js" integrity="sha384-Y4oOpwW3duJdCWv5ly8SCFYWqFDsfob/3GkgExXKV4idmbt98QcxXYs9UoXAB7BZ" crossorigin="anonymous"></script>
+
+    <script src="{% static 'script.js' %}" />
+</body>
+
+
+<!--
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+-->
+
+
+</html>
