@@ -30,7 +30,7 @@ def index(request):
                     #if the filtered ticket count is 0, send a warning message that the ticket wasn't found and load all tickets.
                     if (tickets.count() == 0):
                         messages.add_message(request, messages.WARNING, 'No tickets found for ticket id: {search}.'.format(search=query))
-                        return HttpResponseRedirect('/')
+                        return render(request, 'tickets/index.html', {})
                     
                     paginator = Paginator(tickets, 5)
                     page_number = request.GET.get('page')
