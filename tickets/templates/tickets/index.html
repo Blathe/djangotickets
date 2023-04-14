@@ -177,7 +177,11 @@
                 </div>
                 
                 <div class="bg-white border-top border-secondary-subtle p-1">
+                    {% if page_obj.paginator.count > 1%}
                     <p class="m-0">{{ page_obj.paginator.count }} {% if page_obj.paginator.count > 1 %}tickets{% else %}ticket{% endif %} loaded</p>
+                    {% else %}
+                    <p class="m-0">No tickets loaded.</p>
+                    {% endif%}
                 </div>
             </div>
         </div>
