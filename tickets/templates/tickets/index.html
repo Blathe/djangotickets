@@ -14,7 +14,7 @@
     <title>Django Ticket Manager</title>
 </head>
 
-<body>
+<body class="vh-100 d-flex flex-column">
        
 
   <!-- Navbar Start -->
@@ -25,12 +25,6 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <form class="d-flex ms-auto">
-            <div class="input-group my-3 my-lg-0">
-                <input type="text" class="form-control" placeholder="Search Tickets or Users" aria-label="Recipient's username" aria-describedby="button-addon2">
-                <button class="btn btn-primary" type="button" id="button-addon2"><i class="bi bi-search"></i></button>
-              </div>
-        </form>
         <ul class="navbar-nav">
             <li class="nav-item">
               <a class="nav-link active" aria-current="page" href="#">Tickets</a>
@@ -52,57 +46,53 @@
 
   <!-- Main Content Start -->
 
-  <main>
+  <main class="d-flex flex-column flex-grow-1">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-3">
+            <div class="col-xl-2 p-0">
+                <div class="card text-white bg-dark h-100 rounded-0">
+                    <div class="card-header fw-bold">Header</div>
+                    <div class="card-body">
+                      <h5 class="card-title">Primary card title</h5>
+                      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    </div>
+                  </div>
             </div>
-            <div class="col-md-9">
-                <div class="row">
-                    <div class="col-md-12 fw-bold fs-3">Dashboard</div>
-                  </div>
-                  <div class="row mt-2">
-                    <div class="col-md-3 mb-3">
-                      <div class="card text-white bg-primary h-100">
-                        <div class="card-header fw-bold">Header</div>
-                        <div class="card-body">
-                          <h5 class="card-title">Primary card title</h5>
-                          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                      <div class="card text-white bg-success h-100">
-                        <div class="card-header fw-bold">Header</div>
-                        <div class="card-body">
-                          <h5 class="card-title">Primary card title</h5>
-                          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                      <div class="card text-white bg-warning h-100">
-                        <div class="card-header fw-bold">Header</div>
-                        <div class="card-body">
-                          <h5 class="card-title">Primary card title</h5>
-                          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                      <div class="card text-white bg-danger h-100">
-                        <div class="card-header fw-bold">Header</div>
-                        <div class="card-body">
-                          <h5 class="card-title">Primary card title</h5>
-                          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+            <div class="col-xl-10">                
                   <div class="row mt-2">
                     <div class="col-md-12 mb-3">
                       <div class="card h-100">
-                        <div class="card-header fw-bold">Tickets</div>
+                        <div class="card-header fw-bold d-flex">
+                            <div class="row row-cols-md-auto g-3 align-items-center">
+                                <div class-"col-12">
+                                    <p>Tickets (15)</p>
+                                </div>
+                                <div class="col-12">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" placeholder="Search tickets..." aria-label="Search Tickets" aria-describedby="button-addon2">
+                                        <button class="btn btn-primary" type="button" id="button-addon2">Search</button>
+                                    </div>
+                                  </div>
+                                  
+                                <div class="col-12 d-flex flex-row gap-2">
+                                    <ul class="pagination m-0 p-0 flex-grow-1">
+                                        <li class="page-item">
+                                        <a class="page-link" href="#" aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                        </li>
+                                        <li class="page-item"><a class="page-link" href="#">1</a></li>
+                                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                        <li class="page-item">
+                                        <a class="page-link" href="#" aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table class="table-light table-hover table-bordered table table-hover table-sm">
@@ -142,7 +132,7 @@
                                             {% endif %}
                                             <td>
                                                 {% load tz %}
-                                                {{ ticket.creation_date | utc | date }}
+                                                <small>{{ ticket.creation_date | utc | date }}</small>
                                             </td>
                                             <td class="d-flex gap-3">
                                                 <button type="button" class="btn btn-white border-0 outline-0" data-bs-toggle="dropdown" aria-expanded="false">
