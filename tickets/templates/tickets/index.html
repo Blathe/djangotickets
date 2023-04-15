@@ -9,39 +9,178 @@
     <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous"> -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.4/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
     <link rel="shortcut icon" href="{%  static 'favicon.ico' %}">
     <title>Django Ticket Manager</title>
 </head>
 
-<body class="min-vh-100 d-flex flex-column">
-    <nav class="nav navbar bg-black border-bottom border-secondary-subtle">
-        <div class="container-fluid d-flex">
-            <a href="/" class="navbar-brand text-light">Django Ticket Manager</a>
-            {% if not user.is_authenticated %}
-            <form class="d-flex" role="login" action="{% url 'login' %}" method="post">
-                {% csrf_token %}
-                <input hidden id="username" name="username" value="guest"/>
-                <input hidden id="password" name="password" value="guestpassword123"/>
-                <button class="btn btn-success" type="submit">Login As Guest</button>
-            </form>
-            {% else %}
-            <div class="d-flex gap-4 align-items-center">
-                {% if user.first_name %}
-                <h4 class="text-light float-right">Hello, {{ user.first_name }}</h4>
-                {% else %}
-                <h4 class="text-light float-right">Hello, {{ user.username }}</h4>
-                {% endif %}
-                <form class="d-flex" role="logout" action="{% url 'logout' %}" method="post">
+<body>
+       
+
+  <!-- Navbar Start -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand fw-bold me-auto" href="#">Django Ticket Manager</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <form class="d-flex ms-auto">
+            <div class="input-group my-3 my-lg-0">
+                <input type="text" class="form-control" placeholder="Search Tickets or Users" aria-label="Recipient's username" aria-describedby="button-addon2">
+                <button class="btn btn-primary" type="button" id="button-addon2"><i class="bi bi-search"></i></button>
+              </div>
+        </form>
+        <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="#">Tickets</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Reports</a>
+            </li>
+            <li class="nav-item">
+                <form action="{% url 'logout' %}" method="post">
                     {% csrf_token %}
-                    <button class="btn btn-danger" type="submit">Logout</button>
+                <button class="btn btn-danger">Log Out</button>
                 </form>
+            </li>
+          </ul>
+      </div>
+    </div>
+  </nav>             
+  <!-- Navbar End -->
+
+  <!-- Main Content Start -->
+
+  <main>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3">
             </div>
-            {% endif %}
+            <div class="col-md-9">
+                <div class="row">
+                    <div class="col-md-12 fw-bold fs-3">Dashboard</div>
+                  </div>
+                  <div class="row mt-2">
+                    <div class="col-md-3 mb-3">
+                      <div class="card text-white bg-primary h-100">
+                        <div class="card-header fw-bold">Header</div>
+                        <div class="card-body">
+                          <h5 class="card-title">Primary card title</h5>
+                          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                      <div class="card text-white bg-success h-100">
+                        <div class="card-header fw-bold">Header</div>
+                        <div class="card-body">
+                          <h5 class="card-title">Primary card title</h5>
+                          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                      <div class="card text-white bg-warning h-100">
+                        <div class="card-header fw-bold">Header</div>
+                        <div class="card-body">
+                          <h5 class="card-title">Primary card title</h5>
+                          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                      <div class="card text-white bg-danger h-100">
+                        <div class="card-header fw-bold">Header</div>
+                        <div class="card-body">
+                          <h5 class="card-title">Primary card title</h5>
+                          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row mt-2">
+                    <div class="col-md-12 mb-3">
+                      <div class="card h-100">
+                        <div class="card-header fw-bold">Tickets</div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table-light table-hover table-bordered table table-hover table-sm">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Title</th>
+                                        <th scope="col">Priority</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col">Owner</th>
+                                        <th scope="col">Created On</th>
+                                        <th scope="col"></th>
+                                    </tr>
+                                    </thead>
+                                    {% if page_obj %}
+                                    <tbody>
+                                        {% for ticket in page_obj %}
+                                        <tr>
+                                            <th scope="row"><a href="{% url 'details' ticket.id %}">{{ticket.id}}</a></th>
+                                            <td class="text-truncate">{{ ticket.title }}</td>
+                                            {% if ticket.get_priority_display == 'Low' %}
+                                            <td><span class="badge bg-primary-subtle text-primary-emphasis">{{ticket.get_priority_display}}</span></td>
+                                            {% elif ticket.get_priority_display == 'Medium' %}
+                                            <td><span class="badge bg-warning-subtle text-warning-emphasis">{{ticket.get_priority_display}}</span></td>
+                                            {% elif ticket.get_priority_display == 'High' %}
+                                            <td><span class="badge bg-danger-subtle text-danger-emphasis">{{ticket.get_priority_display}}</span></td>
+                                            {% endif %}
+                                            {% if ticket.status == 'CLOSED' %}
+                                                <td><span class="badge bg-black text-light">{{ticket.status}}<span></td>
+                                            {% else %}
+                                                <td><span class="badge bg-primary text-light">{{ticket.status}}<span></td>
+                                            {% endif %}
+                                            {% if ticket.owner.get_full_name %}
+                                            <td>{{ ticket.owner.get_full_name}}</td>
+                                            {% else %}
+                                            <td>{{ ticket.owner}}</td>
+                                            {% endif %}
+                                            <td>
+                                                {% load tz %}
+                                                {{ ticket.creation_date | utc | date }}
+                                            </td>
+                                            <td class="d-flex gap-3">
+                                                <button type="button" class="btn btn-white border-0 outline-0" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class="bi bi-three-dots"></i>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="{% url 'details' ticket.id %}">Details</a></li>
+                                                    <li><a class="dropdown-item" href="#">
+                                                        <form role="delete" action="{% url 'delete' ticket.id %}" method="get" onsubmit="return confirm('Do you really want to delete this ticket?');">
+                                                            {% csrf_token %}
+                                                            <i class="bi bi-trash3-fill text-danger"></i> <button class="text-danger btn btn-link text-decoration-none p-0 m-0" type="submit">Delete</button>
+                                                        </form>
+                                                    </a></li>
+                                                </ul>
+                                                
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                    {% endif %}
+                                </table>
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+            </div>
         </div>
-    </nav>
-    
-        <div class="d-flex flex-row flex-grow-1">
-            <div class="col-2 bg-light d-flex flex-column border-end border-secondary-subtle gap-4 p-2">
+    </div>
+  </main>
+
+  <!-- Main Content End -->
+  
+
+
+      {% comment %} <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-auto bg-light d-flex flex-column border-end border-secondary-subtle gap-4 p-2">
                 <div class="d-flex flex-row align-items-center justify-content-between">
                     <h3 class="text-black fs-4">Tickets</h3>
                     <button type="button" class="btn btn-primary flex-grow" data-bs-toggle="modal" data-bs-target="#newTicketModal">
@@ -54,39 +193,41 @@
                     <button class="btn btn-primary" type="button" id="search-button" onclick="handleSearch()"><i class="bi bi-search"></i></button>
                 </div>
 
-                <div class="mt-4 d-flex flex-column gap-2">
-                    <a href="#" class="text-decoration-none link-secondary"><strong>All Tickets</strong></a>
-                    <div class="d-flex justify-content-between align-items-center flex-row">
-                    <a href="#" class="text-decoration-none link-secondary"><strong>Open Tickets</strong></a>
-                    <span class="badge bg-secondary text-white">5</span>
-                    </div>
-                </div>
+                <div class="d-none">
 
-                <div class="mt-4 d-flex flex-column gap-2">
-                    <p class="text-body-tertiary m-0 fs-6 text-uppercase fw-medium">Statuses</p>
-                    <a href="#" class="text-decoration-none link-secondary"><strong>Open</strong></a>
-                    <div class="d-flex justify-content-between align-items-center flex-row">
-                        <a href="#" class="text-decoration-none link-secondary"><strong>Closed</strong></a>
+                    <div class="mt-4 d-flex flex-column gap-2">
+                        <a href="#" class="text-decoration-none link-secondary"><strong>All Tickets</strong></a>
+                        <div class="d-flex justify-content-between align-items-center flex-row">
+                        <a href="#" class="text-decoration-none link-secondary"><strong>Open Tickets</strong></a>
                         <span class="badge bg-secondary text-white">5</span>
+                        </div>
                     </div>
-                </div>
 
-                <div class="mt-4 d-flex flex-column gap-2">
-                    <p class="text-body-tertiary m-0 fs-6 text-uppercase fw-medium">Priorities</p>
-                    <a href="#" class="text-decoration-none link-secondary"><strong>Low</strong></a>
-                    <div class="d-flex justify-content-between align-items-center flex-row">
-                        <a href="#" class="text-decoration-none link-secondary"><strong>Medium</strong></a>
-                        <span class="badge bg-secondary text-white">5</span>
+                    <div class="mt-4 d-flex flex-column gap-2">
+                        <p class="text-body-tertiary m-0 fs-6 text-uppercase fw-medium">Statuses</p>
+                        <a href="#" class="text-decoration-none link-secondary"><strong>Open</strong></a>
+                        <div class="d-flex justify-content-between align-items-center flex-row">
+                            <a href="#" class="text-decoration-none link-secondary"><strong>Closed</strong></a>
+                            <span class="badge bg-secondary text-white">5</span>
+                        </div>
                     </div>
-                    <div class="d-flex justify-content-between align-items-center flex-row">
-                        <a href="#" class="text-decoration-none link-secondary"><strong>High</strong></a>
-                        <span class="badge bg-secondary text-white">5</span>
+
+                    <div class="mt-4 d-flex flex-column gap-2">
+                        <p class="text-body-tertiary m-0 fs-6 text-uppercase fw-medium">Priorities</p>
+                        <a href="#" class="text-decoration-none link-secondary"><strong>Low</strong></a>
+                        <div class="d-flex justify-content-between align-items-center flex-row">
+                            <a href="#" class="text-decoration-none link-secondary"><strong>Medium</strong></a>
+                            <span class="badge bg-secondary text-white">5</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center flex-row">
+                            <a href="#" class="text-decoration-none link-secondary"><strong>High</strong></a>
+                            <span class="badge bg-secondary text-white">5</span>
+                        </div>
+                        
                     </div>
-                    
                 </div>
             </div>
-
-            <div class="d-flex flex-column w-100 bg-secondary-subtle">
+            <div class="col d-flex flex-column">
                 <div class="d-flex flex-row justify-content-center p-3 border-bottom border-secondary-subtle bg-white">
                     <h3 class="fs-4 m-0 p-0">All Tickets</h3>
                 </div>
@@ -111,10 +252,10 @@
                             <a href="" class="page-link">Next</a>
                         </li>
                         {% endif %}
-
+    
                     </ul>
                 </div>
-                <div class="flex-grow-1">
+                <div class="flex-grow-1 table-responsive">
                     <table class="table-light table-hover table-bordered table table-hover table-sm">
                         <thead>
                         <tr>
@@ -183,11 +324,8 @@
                     <p class="m-0">No tickets loaded.</p>
                     {% endif%}
                 </div>
-            </div>
-        </div>
-        
-
-          
+          </div>
+        </div> {% endcomment %}
 
     <!-- New Ticket Modal -->
     <div class="modal modal-xl fade" id="newTicketModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="newTicketModalLabel" aria-hidden="true">
