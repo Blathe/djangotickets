@@ -61,7 +61,7 @@ def index(request):
 
                     if request.GET.get('my_tickets') is not None:
                         if request.GET.get('my_tickets') == "true":
-                            all_tickets = all_tickets.filter(owner = request.user)
+                            all_tickets = your_tickets
 
                     if (request.GET.get('per_page')):
                         paginator = Paginator(all_tickets, request.GET.get('per_page'))
