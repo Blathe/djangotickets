@@ -9,39 +9,223 @@
     <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous"> -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.4/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
     <link rel="shortcut icon" href="{%  static 'favicon.ico' %}">
     <title>Django Ticket Manager</title>
 </head>
 
-<body class="min-vh-100 d-flex flex-column">
-    <nav class="nav navbar bg-black border-bottom border-secondary-subtle">
-        <div class="container-fluid d-flex">
-            <a href="/" class="navbar-brand text-light">Django Ticket Manager</a>
-            {% if not user.is_authenticated %}
-            <form class="d-flex" role="login" action="{% url 'login' %}" method="post">
-                {% csrf_token %}
-                <input hidden id="username" name="username" value="guest"/>
-                <input hidden id="password" name="password" value="guestpassword123"/>
-                <button class="btn btn-success" type="submit">Login As Guest</button>
-            </form>
-            {% else %}
-            <div class="d-flex gap-4 align-items-center">
-                {% if user.first_name %}
-                <h4 class="text-light float-right">Hello, {{ user.first_name }}</h4>
-                {% else %}
-                <h4 class="text-light float-right">Hello, {{ user.username }}</h4>
-                {% endif %}
-                <form class="d-flex" role="logout" action="{% url 'logout' %}" method="post">
-                    {% csrf_token %}
-                    <button class="btn btn-danger" type="submit">Logout</button>
-                </form>
+<body class="min-vh-100 d-flex flex-column bg-secondary-subtle">
+       
+
+  <!-- Main Content Start -->
+
+  <div class="container-fluid min-vh-100">
+    <div class="row min-vh-100">
+        <div class="col-12 col-md-3 col-lg-3 col-xl-2 px-sm-2 px-0 bg-dark flex-grow-1">
+            <div class="d-flex flex-column justify-content-between align-items-center align-items-sm-start px-3 pt-3 pb-3 text-white h-100">
+                <a href="/" class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+                    <span class="fs-5 d-sm-inline">Django Ticket Manager</span>
+                </a>
+                <ul class="nav nav-pills flex-column gap-3 mb-sm-auto mb-0 w-100" id="menu">
+                    <li class="nav-item">
+                        <a href="/" class="nav-link align-middle px-2 active">
+                            <i class="fs-4 bi bi-speedometer2"></i> <span class="ms-1 d-sm-inline">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/reports" class="nav-link align-middle px-2">
+                            <i class="fs-4 bi bi-newspaper"></i> <span class="ms-1 d-sm-inline">Reports</span>
+                        </a>
+                    </li>
+                </ul>
+                <hr>
+                <div class="dropdown">
+                    <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle gap-2" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-person-circle fs-4"></i>                       
+                        <span class="d-none d-sm-inline mx-1">{{ request.user }}</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+                        <li><a class="dropdown-item" href="{% url 'logout' %}">Sign out</a></li>
+                    </ul>
+                </div>
             </div>
-            {% endif %}
         </div>
-    </nav>
-    
-        <div class="d-flex flex-row flex-grow-1">
-            <div class="col-2 bg-light d-flex flex-column border-end border-secondary-subtle gap-4 p-2">
+        <div class="col col-md-9 col-lg-9 col-xl-10">
+            <!-- Search Box Section Start -->
+            <div class="row bg-white border-bottom p-4">
+                <div class="input-group p-0">
+                    <input id="search-box" type="text" class="form-control" placeholder="Search Tickets..." aria-label="Search Tickets" aria-describedby="button-addon2">
+                    <button class="btn btn-primary" type="button" id="button-addon2" onclick="handleSearch()"><i class="bi bi-search"></i> Search</button>
+                  </div>                  
+            </div>
+
+            <!-- Search Box Section End -->
+
+            <!-- Buttons Section Start -->
+
+            <div class="row mt-2 g-2">
+                <div class="col">
+                    <button type="button" class="btn btn-primary flex-grow" data-bs-toggle="modal" data-bs-target="#newTicketModal">
+                        + Create Ticket
+                    </button>
+                </div>
+            </div>
+            <!-- Buttons Section End -->
+
+            <!-- Status Card Section Start -->
+            <div class="row mt-2 g-2">
+                <div class="col-lg-3">
+                    <a class="text-decoration-none" href="/?filters=OPEN">
+                        <div class="card bg-blue text-light">
+                            <div class="card-body text-center">
+                            <p class="card-text">{% if open_tickets %}{{open_tickets.count}}{%endif%}</p>
+                            <h5 class="card-title">Open Tickets</h5>
+                            </div>
+                        </div>       
+                    </a>              
+                </div>
+                <div class="col-lg-3">
+                    <a class="text-decoration-none" href="/?filters=CLOSED">
+                        <div class="card bg-green text-light">
+                            <div class="card-body text-center">
+                            <p class="card-text">{% if closed_tickets %}{{closed_tickets.count}}{%endif%}</p>
+                            <h5 class="card-title">Closed Tickets</h5>
+                            </div>
+                        </div>
+                    </a>
+                </div> 
+                <div class="col-lg-3">
+                    <a class="text-decoration-none" href="/">
+                        <div class="card bg-purple text-light">
+                            <div class="card-body text-center">
+                            <p class="card-text">{% if page_obj %}{{page_obj.paginator.count}}{%endif%}</p>
+                            <h5 class="card-title">All Tickets</h5>
+                            </div>
+                        </div>
+                    </a>
+                </div>  
+                <div class="col-lg-3">
+                    <a class="text-decoration-none" href="/?my_tickets=true">
+                        <div class="card bg-orange text-light">
+                            <div class="card-body text-center">
+                            <p class="card-text">{% if your_tickets %}{{your_tickets.count}}{%endif%}</p>
+                            <h5 class="card-title">Your Tickets</h5>
+                            </div>
+                        </div>
+                    </a>
+                </div>               
+            </div>
+
+            <!-- Status Card Section End -->
+
+            <div class="row mt-2">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col">
+                                    <p class="fs-6 p-0">Tickets ({% if page_obj%}{{page_obj.paginator.count}}{%else%}0{%endif%})</p>
+                                </div>
+                                <div class="col d-flex align-items-center justify-content-end gap-3">
+                                    <div class="d-flex gap-3 align-items-center">
+                                        <small class="p-0 m-0 flex-grow-1">Results Per Page:</small>
+                                        <select class="form-select" aria-label="Default select example">
+                                            <option value="5" selected>5</option>
+                                            <option value="15">15</option>
+                                            <option value="30">30</option>
+                                          </select>
+                                    </div>
+
+                                    <ul class="pagination m-0 p-0">
+                                        {% if page_obj.has_previous%}
+                                        <li class="page-item">
+                                        <a class="page-link" href="/?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                        </li>
+                                        {% endif %}
+                                        {% for page in page_obj.paginator.page_range %}
+                                        <li class="page-item {% if page_obj.number == page %}active{% endif %}"><a class="page-link" href="/?page={{page}}">{{ page }}</a></li>
+                                        {% endfor %}
+                                        {% if page_obj.has_next%}
+                                        <li class="page-item">
+                                        <a class="page-link" href="/?page={{ page_obj.next_page_number }}" aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                        </li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive p-0">
+                                {% if page_obj %}
+                                <table class="table text-align-middle">
+                                    <tbody>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Title</th>
+                                            <th scope="col">Priority</th>
+                                            <th scope="col">Status</th>
+                                            <th scope="col">Owner</th>
+                                            <th scope="col">Created On</th>
+                                            <th scope="col"></th>
+                                        </tr>
+                                        {% for ticket in page_obj %}
+                                        <tr>
+                                            <th scope="row"><a href="{% url 'details' ticket.id %}">{{ticket.id}}</a></th>
+                                            <td class="text-truncate">{{ ticket.title }}</td>
+                                            {% if ticket.get_priority_display == 'Low' %}
+                                            <td><span class="badge bg-green text-primary-emphasis">{{ticket.get_priority_display}}</span></td>
+                                            {% elif ticket.get_priority_display == 'Medium' %}
+                                            <td><span class="badge bg-blue text-warning-emphasis">{{ticket.get_priority_display}}</span></td>
+                                            {% elif ticket.get_priority_display == 'High' %}
+                                            <td><span class="badge bg-orange text-warning-emphasis">{{ticket.get_priority_display}}</span></td>
+                                            {% endif %}
+                                            {% if ticket.status == 'CLOSED' %}
+                                                <td><span class="badge bg-green text-success-emphasis">{{ticket.status}}<span></td>
+                                            {% else %}
+                                                <td><span class="badge bg-blue text-primary-emphasis">{{ticket.status}}<span></td>
+                                            {% endif %}
+                                            {% if ticket.owner.get_full_name %}
+                                            <td>{{ ticket.owner.get_full_name}}</td>
+                                            {% else %}
+                                            <td>{{ ticket.owner}}</td>
+                                            {% endif %}
+                                            <td>
+                                                {% load tz %}
+                                                <small>{{ ticket.creation_date | utc | date }}</small>
+                                            </td>
+                                            <td>
+                                                <button type="button" class="btn btn-white border-0 outline-0" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class="bi bi-three-dots"></i>
+                                                </button>
+                                                
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+  
+  <!-- Main Content End -->
+  
+
+
+      {% comment %} <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-auto bg-light d-flex flex-column border-end border-secondary-subtle gap-4 p-2">
                 <div class="d-flex flex-row align-items-center justify-content-between">
                     <h3 class="text-black fs-4">Tickets</h3>
                     <button type="button" class="btn btn-primary flex-grow" data-bs-toggle="modal" data-bs-target="#newTicketModal">
@@ -54,39 +238,41 @@
                     <button class="btn btn-primary" type="button" id="search-button" onclick="handleSearch()"><i class="bi bi-search"></i></button>
                 </div>
 
-                <div class="mt-4 d-flex flex-column gap-2">
-                    <a href="#" class="text-decoration-none link-secondary"><strong>All Tickets</strong></a>
-                    <div class="d-flex justify-content-between align-items-center flex-row">
-                    <a href="#" class="text-decoration-none link-secondary"><strong>Open Tickets</strong></a>
-                    <span class="badge bg-secondary text-white">5</span>
-                    </div>
-                </div>
+                <div class="d-none">
 
-                <div class="mt-4 d-flex flex-column gap-2">
-                    <p class="text-body-tertiary m-0 fs-6 text-uppercase fw-medium">Statuses</p>
-                    <a href="#" class="text-decoration-none link-secondary"><strong>Open</strong></a>
-                    <div class="d-flex justify-content-between align-items-center flex-row">
-                        <a href="#" class="text-decoration-none link-secondary"><strong>Closed</strong></a>
+                    <div class="mt-4 d-flex flex-column gap-2">
+                        <a href="#" class="text-decoration-none link-secondary"><strong>All Tickets</strong></a>
+                        <div class="d-flex justify-content-between align-items-center flex-row">
+                        <a href="#" class="text-decoration-none link-secondary"><strong>Open Tickets</strong></a>
                         <span class="badge bg-secondary text-white">5</span>
+                        </div>
                     </div>
-                </div>
 
-                <div class="mt-4 d-flex flex-column gap-2">
-                    <p class="text-body-tertiary m-0 fs-6 text-uppercase fw-medium">Priorities</p>
-                    <a href="#" class="text-decoration-none link-secondary"><strong>Low</strong></a>
-                    <div class="d-flex justify-content-between align-items-center flex-row">
-                        <a href="#" class="text-decoration-none link-secondary"><strong>Medium</strong></a>
-                        <span class="badge bg-secondary text-white">5</span>
+                    <div class="mt-4 d-flex flex-column gap-2">
+                        <p class="text-body-tertiary m-0 fs-6 text-uppercase fw-medium">Statuses</p>
+                        <a href="#" class="text-decoration-none link-secondary"><strong>Open</strong></a>
+                        <div class="d-flex justify-content-between align-items-center flex-row">
+                            <a href="#" class="text-decoration-none link-secondary"><strong>Closed</strong></a>
+                            <span class="badge bg-secondary text-white">5</span>
+                        </div>
                     </div>
-                    <div class="d-flex justify-content-between align-items-center flex-row">
-                        <a href="#" class="text-decoration-none link-secondary"><strong>High</strong></a>
-                        <span class="badge bg-secondary text-white">5</span>
+
+                    <div class="mt-4 d-flex flex-column gap-2">
+                        <p class="text-body-tertiary m-0 fs-6 text-uppercase fw-medium">Priorities</p>
+                        <a href="#" class="text-decoration-none link-secondary"><strong>Low</strong></a>
+                        <div class="d-flex justify-content-between align-items-center flex-row">
+                            <a href="#" class="text-decoration-none link-secondary"><strong>Medium</strong></a>
+                            <span class="badge bg-secondary text-white">5</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center flex-row">
+                            <a href="#" class="text-decoration-none link-secondary"><strong>High</strong></a>
+                            <span class="badge bg-secondary text-white">5</span>
+                        </div>
+                        
                     </div>
-                    
                 </div>
             </div>
-
-            <div class="d-flex flex-column w-100 bg-secondary-subtle">
+            <div class="col d-flex flex-column">
                 <div class="d-flex flex-row justify-content-center p-3 border-bottom border-secondary-subtle bg-white">
                     <h3 class="fs-4 m-0 p-0">All Tickets</h3>
                 </div>
@@ -111,10 +297,10 @@
                             <a href="" class="page-link">Next</a>
                         </li>
                         {% endif %}
-
+    
                     </ul>
                 </div>
-                <div class="flex-grow-1">
+                <div class="flex-grow-1 table-responsive">
                     <table class="table-light table-hover table-bordered table table-hover table-sm">
                         <thead>
                         <tr>
@@ -183,11 +369,8 @@
                     <p class="m-0">No tickets loaded.</p>
                     {% endif%}
                 </div>
-            </div>
-        </div>
-        
-
-          
+          </div>
+        </div> {% endcomment %}
 
     <!-- New Ticket Modal -->
     <div class="modal modal-xl fade" id="newTicketModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="newTicketModalLabel" aria-hidden="true">

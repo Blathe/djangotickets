@@ -1,0 +1,34 @@
+body,
+main {
+    margin: 0;
+    padding: 0;
+}
+
+.bg-green {
+    background-color: #8ab324;
+}
+
+.bg-purple {
+    background-color: #ab47bc;
+}
+
+.bg-blue {
+    background-color: #03a9f4;
+}
+.bg-orange {
+    background-color: #fa9f1b;
+}
+
+@media (max-width: 768px) { 
+    .sidebar {
+        height: 20px;
+        min-height: 0px;
+        max-height: 0px;
+    }
+
+    #bootstrap-overrides .min-vh-100 {
+        height: 400px;
+        min-height: 5px;
+        max-height: 30vh;
+    }
+}
