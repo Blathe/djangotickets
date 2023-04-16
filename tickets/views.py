@@ -59,10 +59,6 @@ def index(request):
                         else:
                             all_tickets = tickets.order_by(sort)
 
-                    if request.GET.get('my_tickets') is not None:
-                        if request.GET.get('my_tickets') == "true":
-                            all_tickets = your_tickets
-
                     if (request.GET.get('per_page')):
                         paginator = Paginator(all_tickets, request.GET.get('per_page'))
                     else:
@@ -73,6 +69,10 @@ def index(request):
                         
                     return render(request, 'tickets/index.html', {'page_obj': page_obj, 'search_results': page_obj.paginator.count, 'open_tickets': open_tickets, 'closed_tickets' : closed_tickets, 'your_tickets' : your_tickets})
                 else:    
+                    if request.GET.get('my_tickets') is not None:
+                        if request.GET.get('my_tickets') == "true":
+                            all_tickets = your_tickets
+                            
                     all_tickets.order_by('creation_date')
 
                 if (request.GET.get('per_page')):
