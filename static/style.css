@@ -6,7 +6,15 @@ main {
 
 
 @media (max-width: 768px) { 
-    .vh-100 {
+    .sidebar {
+        height: 20px;
+        min-height: 0px;
+        max-height: 0px;
+    }
+
+    #bootstrap-overrides .min-vh-100 {
+        height: 400px;
+        min-height: 5px;
         max-height: 30vh;
     }
 }
