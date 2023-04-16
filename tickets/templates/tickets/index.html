@@ -102,11 +102,11 @@
             <div class="row mt-2">
                 <div class="col">
                     {% if page_obj %}
-                    <div class="card clearfix">
+                    <div class="card">
                         <div class="card-header">
                             <div class="row">
                                 <div class="col">
-                                    <p class="fs-4">Tickets ({{ page_obj.paginator.count }})</p>
+                                    <p class="fs-6 p-0">Tickets ({{ page_obj.paginator.count }})</p>
                                 </div>
 
                                 <div class="col d-flex justify-content-end">
@@ -134,8 +134,7 @@
                         </div>
                         <div class="card-body">
                             <div class="table-responsive p-0">
-                                <table class="table caption-top">
-                                    <caption>tickets ({{ page_obj.paginator.count }})</caption>
+                                <table class="table">
                                     <tbody>
                                         {% for ticket in page_obj %}
                                         <tr>
