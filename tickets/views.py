@@ -15,6 +15,12 @@ from .models import Ticket, Comment
 def index(request):
     if request.method == "GET":
         if request.user.is_authenticated:
+            # This should probably be done differently on a larger product with more data but it will work for now.
+            all_tickets = Ticket.objects.all()
+            open_tickets = all_tickets.filter(status = "OPEN")
+            closed_tickets = all_tickets.filter(status = "CLOSED")
+            your_tickets = all_tickets.filter(owner = request.user)
+            
             if request.GET.get('search') is not None:
                 query = request.GET.get('search')
                 #double check to make sure the query exists
@@ -25,41 +31,59 @@ def index(request):
                         return HttpResponseRedirect('/')
                     
                     #grab all tickets and filter to grab any with a ticket number that matches the query
-                    tickets = Ticket.objects.filter(id=query)
+                    filtered_tickets = all_tickets.filter(id = query)
                     
-                    #if the filtered ticket count is 0, send a warning message that the ticket wasn't found and load all tickets.
-                    if (tickets.count() == 0):
-                        messages.add_message(request, messages.WARNING, 'No ticket found with id: {search}.'.format(search=query))
-                        return render(request, 'tickets/index.html', {})
-                    
-                    paginator = Paginator(tickets, 5)
+                    if (request.GET.get('per_page')):
+                        paginator = Paginator(filtered_tickets, request.GET.get('per_page'))
+                    else:
+                        paginator = Paginator(filtered_tickets, 10)
+
                     page_number = request.GET.get('page')
                     page_obj = paginator.get_page(page_number)
-                    
-                    return render(request, 'tickets/index.html', {'page_obj': page_obj, 'search_results': page_obj.paginator.count})
+
+                    #if the filtered ticket count is 0, send a warning message that the ticket wasn't found and load all tickets.
+                    if (filtered_tickets.count() == 0):
+                        messages.add_message(request, messages.WARNING, 'No ticket found with id: {search}.'.format(search=query))                    
+
+                    return render(request, 'tickets/index.html', {'page_obj': page_obj, 'search_results': page_obj.paginator.count, 'open_tickets': open_tickets, 'closed_tickets' : closed_tickets, 'your_tickets' : your_tickets})
             else:
-                tickets = Ticket.objects.all()
                 if request.GET.get('filters') is not None or request.GET.get('sort') is not None:
                     filters = request.GET.get('filters')
                     sort = request.GET.get('sort')
                     
                     if (filters is not None):
-                            tickets = tickets.filter(status = 'OPEN')
+                            all_tickets = all_tickets.filter(status = request.GET.get('filters'))
                     if (sort is not None):
                         if (sort == "default"):
-                            tickets = tickets.order_by("creation_date")
+                            all_tickets = tickets.order_by("creation_date")
                         else:
-                            tickets = tickets.order_by(sort)
-                        
-                    return render(request, 'tickets/index.html', {'tickets':tickets})
-                else:    
-                    tickets = Ticket.objects.order_by('creation_date')
+                            all_tickets = tickets.order_by(sort)
 
-                paginator = Paginator(tickets, 5)
+                    if request.GET.get('my_tickets') is not None:
+                        if request.GET.get('my_tickets') == "true":
+                            all_tickets = all_tickets.filter(owner = request.user)
+
+                    if (request.GET.get('per_page')):
+                        paginator = Paginator(all_tickets, request.GET.get('per_page'))
+                    else:
+                        paginator = Paginator(all_tickets, 10)
+
+                    page_number = request.GET.get('page')
+                    page_obj = paginator.get_page(page_number)
+                        
+                    return render(request, 'tickets/index.html', {'page_obj': page_obj, 'search_results': page_obj.paginator.count, 'open_tickets': open_tickets, 'closed_tickets' : closed_tickets, 'your_tickets' : your_tickets})
+                else:    
+                    all_tickets.order_by('creation_date')
+
+                if (request.GET.get('per_page')):
+                    paginator = Paginator(all_tickets, request.GET.get('per_page'))
+                else:
+                    paginator = Paginator(all_tickets, 10)
+
                 page_number = request.GET.get('page')
                 page_obj = paginator.get_page(page_number)
 
-                return render(request, 'tickets/index.html', {'page_obj': page_obj})
+                return render(request, 'tickets/index.html', {'page_obj': page_obj, 'search_results': page_obj.paginator.count, 'open_tickets': open_tickets, 'closed_tickets' : closed_tickets, 'your_tickets' : your_tickets})
         else:
             return HttpResponseRedirect('/login')
     return render(request, 'tickets/index.html')       

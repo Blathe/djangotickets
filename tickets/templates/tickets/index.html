@@ -21,25 +21,25 @@
 
   <div class="container-fluid min-vh-100">
     <div class="row min-vh-100">
-        <div id="bootstrap-overrides" class="col-12 col-md-3 col-lg-3 col-xl-2 px-sm-2 px-0 bg-dark flex-grow-1">
-            <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white">
+        <div class="col-12 col-md-3 col-lg-3 col-xl-2 px-sm-2 px-0 bg-dark flex-grow-1">
+            <div class="d-flex flex-column justify-content-between align-items-center align-items-sm-start px-3 pt-3 pb-3 text-white h-100">
                 <a href="/" class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-                    <span class="fs-5 d-none d-sm-inline">Django Ticket Manager</span>
+                    <span class="fs-5 d-sm-inline">Django Ticket Manager</span>
                 </a>
-                <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
+                <ul class="nav nav-pills flex-column gap-3 mb-sm-auto mb-0 w-100" id="menu">
                     <li class="nav-item">
-                        <a href="#" class="nav-link align-middle px-0">
-                            <i class="fs-4 bi bi-speedometer2"></i> <span class="ms-1 d-none d-sm-inline">Dashboard</span>
+                        <a href="/" class="nav-link align-middle px-2 active">
+                            <i class="fs-4 bi bi-speedometer2"></i> <span class="ms-1 d-sm-inline">Dashboard</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link align-middle px-0">
-                            <i class="fs-4 bi bi-newspaper"></i> <span class="ms-1 d-none d-sm-inline">Home</span>
+                        <a href="/reports" class="nav-link align-middle px-2">
+                            <i class="fs-4 bi bi-newspaper"></i> <span class="ms-1 d-sm-inline">Reports</span>
                         </a>
                     </li>
                 </ul>
                 <hr>
-                <div class="dropdown pb-4">
+                <div class="dropdown">
                     <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle gap-2" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-person-circle fs-4"></i>                       
                         <span class="d-none d-sm-inline mx-1">{{ request.user }}</span>
@@ -54,46 +54,65 @@
             <!-- Search Box Section Start -->
             <div class="row bg-white border-bottom p-4">
                 <div class="input-group p-0">
-                    <input type="text" class="form-control" placeholder="Search Tickets..." aria-label="Search Tickets" aria-describedby="button-addon2">
-                    <button class="btn btn-primary" type="button" id="button-addon2"><i class="bi bi-search"></i> Search</button>
+                    <input id="search-box" type="text" class="form-control" placeholder="Search Tickets..." aria-label="Search Tickets" aria-describedby="button-addon2">
+                    <button class="btn btn-primary" type="button" id="button-addon2" onclick="handleSearch()"><i class="bi bi-search"></i> Search</button>
                   </div>                  
             </div>
 
             <!-- Search Box Section End -->
 
+            <!-- Buttons Section Start -->
+
+            <div class="row mt-2 g-2">
+                <div class="col">
+                    <button type="button" class="btn btn-primary flex-grow" data-bs-toggle="modal" data-bs-target="#newTicketModal">
+                        + Create Ticket
+                    </button>
+                </div>
+            </div>
+            <!-- Buttons Section End -->
+
             <!-- Status Card Section Start -->
             <div class="row mt-2 g-2">
                 <div class="col-lg-3">
-                    <div class="card text-bg-light">
-                        <div class="card-body text-center">
-                          <p class="card-text">{{ page_obj.paginator.count }}</p>
-                          <h5 class="card-title">Open Tickets</h5>
-                        </div>
-                    </div>                     
+                    <a class="text-decoration-none" href="/?filters=OPEN">
+                        <div class="card bg-blue text-light">
+                            <div class="card-body text-center">
+                            <p class="card-text">{% if open_tickets %}{{open_tickets.count}}{%endif%}</p>
+                            <h5 class="card-title">Open Tickets</h5>
+                            </div>
+                        </div>       
+                    </a>              
                 </div>
                 <div class="col-lg-3">
-                    <div class="card text-bg-light">
-                        <div class="card-body text-center">
-                          <p class="card-text">5</p>
-                          <h5 class="card-title">Closed Tickets</h5>
+                    <a class="text-decoration-none" href="/?filters=CLOSED">
+                        <div class="card bg-green text-light">
+                            <div class="card-body text-center">
+                            <p class="card-text">{% if closed_tickets %}{{closed_tickets.count}}{%endif%}</p>
+                            <h5 class="card-title">Closed Tickets</h5>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                 </div> 
                 <div class="col-lg-3">
-                    <div class="card text-bg-light">
-                        <div class="card-body text-center">
-                          <p class="card-text">{{ page_obj.paginator.count }}</p>
-                          <h5 class="card-title">Total Tickets</h5>
+                    <a class="text-decoration-none" href="/">
+                        <div class="card bg-purple text-light">
+                            <div class="card-body text-center">
+                            <p class="card-text">{% if page_obj %}{{page_obj.paginator.count}}{%endif%}</p>
+                            <h5 class="card-title">All Tickets</h5>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                 </div>  
                 <div class="col-lg-3">
-                    <div class="card text-bg-light">
-                        <div class="card-body text-center">
-                          <p class="card-text">5</p>
-                          <h5 class="card-title">Light card title</h5>
+                    <a class="text-decoration-none" href="/?my_tickets=true">
+                        <div class="card bg-orange text-light">
+                            <div class="card-body text-center">
+                            <p class="card-text">{% if your_tickets %}{{your_tickets.count}}{%endif%}</p>
+                            <h5 class="card-title">Your Tickets</h5>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                 </div>               
             </div>
 
@@ -101,15 +120,22 @@
 
             <div class="row mt-2">
                 <div class="col">
-                    {% if page_obj %}
                     <div class="card">
                         <div class="card-header">
                             <div class="row">
                                 <div class="col">
-                                    <p class="fs-6 p-0">Tickets ({{ page_obj.paginator.count }})</p>
+                                    <p class="fs-6 p-0">Tickets ({% if page_obj%}{{page_obj.paginator.count}}{%else%}0{%endif%})</p>
                                 </div>
+                                <div class="col d-flex align-items-center justify-content-end gap-3">
+                                    <div class="d-flex gap-3 align-items-center">
+                                        <small class="p-0 m-0 flex-grow-1">Results Per Page:</small>
+                                        <select class="form-select" aria-label="Default select example">
+                                            <option value="5" selected>5</option>
+                                            <option value="15">15</option>
+                                            <option value="30">30</option>
+                                          </select>
+                                    </div>
 
-                                <div class="col d-flex justify-content-end">
                                     <ul class="pagination m-0 p-0">
                                         {% if page_obj.has_previous%}
                                         <li class="page-item">
@@ -134,23 +160,33 @@
                         </div>
                         <div class="card-body">
                             <div class="table-responsive p-0">
+                                {% if page_obj %}
                                 <table class="table">
                                     <tbody>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Title</th>
+                                            <th scope="col">Priority</th>
+                                            <th scope="col">Status</th>
+                                            <th scope="col">Owner</th>
+                                            <th scope="col">Created On</th>
+                                            <th scope="col"></th>
+                                        </tr>
                                         {% for ticket in page_obj %}
                                         <tr>
                                             <th scope="row"><a href="{% url 'details' ticket.id %}">{{ticket.id}}</a></th>
                                             <td class="text-truncate">{{ ticket.title }}</td>
                                             {% if ticket.get_priority_display == 'Low' %}
-                                            <td><span class="badge bg-primary-subtle text-primary-emphasis">{{ticket.get_priority_display}}</span></td>
+                                            <td><span class="badge bg-green text-primary-emphasis">{{ticket.get_priority_display}}</span></td>
                                             {% elif ticket.get_priority_display == 'Medium' %}
-                                            <td><span class="badge bg-warning-subtle text-warning-emphasis">{{ticket.get_priority_display}}</span></td>
+                                            <td><span class="badge bg-blue text-warning-emphasis">{{ticket.get_priority_display}}</span></td>
                                             {% elif ticket.get_priority_display == 'High' %}
-                                            <td><span class="badge bg-danger-subtle text-danger-emphasis">{{ticket.get_priority_display}}</span></td>
+                                            <td><span class="badge bg-orange text-warning-emphasis">{{ticket.get_priority_display}}</span></td>
                                             {% endif %}
                                             {% if ticket.status == 'CLOSED' %}
-                                                <td><span class="badge bg-black text-light">{{ticket.status}}<span></td>
+                                                <td><span class="badge bg-green text-success-emphasis">{{ticket.status}}<span></td>
                                             {% else %}
-                                                <td><span class="badge bg-primary text-light">{{ticket.status}}<span></td>
+                                                <td><span class="badge bg-blue text-primary-emphasis">{{ticket.status}}<span></td>
                                             {% endif %}
                                             {% if ticket.owner.get_full_name %}
                                             <td>{{ ticket.owner.get_full_name}}</td>
@@ -171,58 +207,10 @@
                                         {% endfor %}
                                     </tbody>
                                 </table>
-                                {% comment %} <table class="table">
-                                    <thead>
-                                    <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">Title</th>
-                                        <th scope="col">Priority</th>
-                                        <th scope="col">Status</th>
-                                        <th scope="col">Owner</th>
-                                        <th scope="col">Created On</th>
-                                        <th scope="col"></th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for ticket in page_obj %}
-                                        <tr>
-                                            <th scope="row"><a href="{% url 'details' ticket.id %}">{{ticket.id}}</a></th>
-                                            <td class="text-truncate">{{ ticket.title }}</td>
-                                            {% if ticket.get_priority_display == 'Low' %}
-                                            <td><span class="badge bg-primary-subtle text-primary-emphasis">{{ticket.get_priority_display}}</span></td>
-                                            {% elif ticket.get_priority_display == 'Medium' %}
-                                            <td><span class="badge bg-warning-subtle text-warning-emphasis">{{ticket.get_priority_display}}</span></td>
-                                            {% elif ticket.get_priority_display == 'High' %}
-                                            <td><span class="badge bg-danger-subtle text-danger-emphasis">{{ticket.get_priority_display}}</span></td>
-                                            {% endif %}
-                                            {% if ticket.status == 'CLOSED' %}
-                                                <td><span class="badge bg-black text-light">{{ticket.status}}<span></td>
-                                            {% else %}
-                                                <td><span class="badge bg-primary text-light">{{ticket.status}}<span></td>
-                                            {% endif %}
-                                            {% if ticket.owner.get_full_name %}
-                                            <td>{{ ticket.owner.get_full_name}}</td>
-                                            {% else %}
-                                            <td>{{ ticket.owner}}</td>
-                                            {% endif %}
-                                            <td>
-                                                {% load tz %}
-                                                <small>{{ ticket.creation_date | utc | date }}</small>
-                                            </td>
-                                            <td>
-                                                <button type="button" class="btn btn-white border-0 outline-0" data-bs-toggle="dropdown" aria-expanded="false">
-                                                    <i class="bi bi-three-dots"></i>
-                                                </button>
-                                                
-                                            </td>
-                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table> {% endcomment %}
+                                {% endif %}
                             </div>
                         </div>
                     </div>
-                    {% endif %}
                 </div>
             </div>
         </div>

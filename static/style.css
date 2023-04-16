@@ -4,6 +4,20 @@ main {
     padding: 0;
 }
 
+.bg-green {
+    background-color: #9FCC2E;
+}
+
+.bg-purple {
+    background-color: #ab47bc;
+}
+
+.bg-blue {
+    background-color: #03a9f4;
+}
+.bg-orange {
+    background-color: #fa9f1b;
+}
 
 @media (max-width: 768px) { 
     .sidebar {
