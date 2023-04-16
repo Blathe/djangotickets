@@ -14,100 +14,128 @@
     <title>Django Ticket Manager</title>
 </head>
 
-<body class="vh-100 d-flex flex-column">
+<body class="vh-100 d-flex flex-column bg-secondary-subtle">
        
-
-  <!-- Navbar Start -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-      <a class="navbar-brand fw-bold me-auto" href="#">Django Ticket Manager</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav">
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="#">Tickets</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Reports</a>
-            </li>
-            <li class="nav-item">
-                <form action="{% url 'logout' %}" method="post">
-                    {% csrf_token %}
-                <button class="btn btn-danger">Log Out</button>
-                </form>
-            </li>
-          </ul>
-      </div>
-    </div>
-  </nav>             
-  <!-- Navbar End -->
 
   <!-- Main Content Start -->
 
-  <main class="d-flex flex-column flex-grow-1">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-xl-2 p-0">
-                <div class="card text-white bg-dark h-100 rounded-0">
-                    <div class="card-header fw-bold">Header</div>
-                    <div class="card-body">
-                      <h5 class="card-title">Primary card title</h5>
-                      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                    </div>
-                  </div>
+  <div class="container-fluid">
+    <div class="row">
+        <div class="col-12 col-md-3 col-lg-3 col-xl-2 px-sm-2 px-0 bg-dark vh-100 vh-sm-100">
+            <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white">
+                <a href="/" class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+                    <span class="fs-5 d-none d-sm-inline">Django Ticket Manager</span>
+                </a>
+                <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link align-middle px-0">
+                            <i class="fs-4 bi bi-speedometer2"></i> <span class="ms-1 d-none d-sm-inline">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link align-middle px-0">
+                            <i class="fs-4 bi bi-newspaper"></i> <span class="ms-1 d-none d-sm-inline">Home</span>
+                        </a>
+                    </li>
+                </ul>
+                <hr>
+                <div class="dropdown pb-4">
+                    <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle gap-2" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-person-circle fs-4"></i>                       
+                        <span class="d-none d-sm-inline mx-1">{{ request.user }}</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+                        <li><a class="dropdown-item" href="{% url 'logout' %}">Sign out</a></li>
+                    </ul>
+                </div>
             </div>
-            <div class="col-xl-10">                
-                  <div class="row mt-2">
-                    <div class="col-md-12 mb-3">
-                      <div class="card h-100">
-                        <div class="card-header fw-bold d-flex">
-                            <div class="row row-cols-md-auto g-3 align-items-center">
-                                <div class-"col-12">
-                                    <p>Tickets (15)</p>
+        </div>
+        <div class="col">
+            <!-- Search Box Section Start -->
+            <div class="row bg-white border-bottom p-4">
+                <div class="input-group p-0">
+                    <input type="text" class="form-control" placeholder="Search Tickets..." aria-label="Search Tickets" aria-describedby="button-addon2">
+                    <button class="btn btn-primary" type="button" id="button-addon2"><i class="bi bi-search"></i> Search</button>
+                  </div>                  
+            </div>
+
+            <!-- Search Box Section End -->
+
+            <!-- Status Card Section Start -->
+            <div class="row mt-2 g-2">
+                <div class="col-lg-3">
+                    <div class="card text-bg-light">
+                        <div class="card-body text-center">
+                          <p class="card-text">{{ page_obj.paginator.count }}</p>
+                          <h5 class="card-title">Open Tickets</h5>
+                        </div>
+                    </div>                     
+                </div>
+                <div class="col-lg-3">
+                    <div class="card text-bg-light">
+                        <div class="card-body text-center">
+                          <p class="card-text">5</p>
+                          <h5 class="card-title">Closed Tickets</h5>
+                        </div>
+                    </div>
+                </div> 
+                <div class="col-lg-3">
+                    <div class="card text-bg-light">
+                        <div class="card-body text-center">
+                          <p class="card-text">{{ page_obj.paginator.count }}</p>
+                          <h5 class="card-title">Total Tickets</h5>
+                        </div>
+                    </div>
+                </div>  
+                <div class="col-lg-3">
+                    <div class="card text-bg-light">
+                        <div class="card-body text-center">
+                          <p class="card-text">5</p>
+                          <h5 class="card-title">Light card title</h5>
+                        </div>
+                    </div>
+                </div>               
+            </div>
+
+            <!-- Status Card Section End -->
+
+            <div class="row mt-2">
+                <div class="col">
+                    {% if page_obj %}
+                    <div class="card clearfix">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col">
+                                    <p class="fs-4">Tickets ({{ page_obj.paginator.count }})</p>
                                 </div>
-                                <div class="col-12">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" placeholder="Search tickets..." aria-label="Search Tickets" aria-describedby="button-addon2">
-                                        <button class="btn btn-primary" type="button" id="button-addon2">Search</button>
-                                    </div>
-                                  </div>
-                                  
-                                <div class="col-12 d-flex flex-row gap-2">
-                                    <ul class="pagination m-0 p-0 flex-grow-1">
+
+                                <div class="col d-flex justify-content-end">
+                                    <ul class="pagination m-0 p-0">
+                                        {% if page_obj.has_previous%}
                                         <li class="page-item">
-                                        <a class="page-link" href="#" aria-label="Previous">
+                                        <a class="page-link" href="/?page={{ page_obj.previous_page_number }}" aria-label="Previous">
                                             <span aria-hidden="true">&laquo;</span>
                                         </a>
                                         </li>
-                                        <li class="page-item"><a class="page-link" href="#">1</a></li>
-                                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                        {% endif %}
+                                        {% for page in page_obj.paginator.page_range %}
+                                        <li class="page-item {% if page_obj.number == page %}active{% endif %}"><a class="page-link" href="/?page={{page}}">{{ page }}</a></li>
+                                        {% endfor %}
+                                        {% if page_obj.has_next%}
                                         <li class="page-item">
-                                        <a class="page-link" href="#" aria-label="Next">
+                                        <a class="page-link" href="/?page={{ page_obj.next_page_number }}" aria-label="Next">
                                             <span aria-hidden="true">&raquo;</span>
                                         </a>
                                         </li>
+                                        {% endif %}
                                     </ul>
                                 </div>
                             </div>
                         </div>
                         <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table-light table-hover table-bordered table table-hover table-sm">
-                                    <thead>
-                                    <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">Title</th>
-                                        <th scope="col">Priority</th>
-                                        <th scope="col">Status</th>
-                                        <th scope="col">Owner</th>
-                                        <th scope="col">Created On</th>
-                                        <th scope="col"></th>
-                                    </tr>
-                                    </thead>
-                                    {% if page_obj %}
+                            <div class="table-responsive p-0">
+                                <table class="table caption-top">
+                                    <caption>tickets ({{ page_obj.paginator.count }})</caption>
                                     <tbody>
                                         {% for ticket in page_obj %}
                                         <tr>
@@ -134,36 +162,76 @@
                                                 {% load tz %}
                                                 <small>{{ ticket.creation_date | utc | date }}</small>
                                             </td>
-                                            <td class="d-flex gap-3">
+                                            <td>
                                                 <button type="button" class="btn btn-white border-0 outline-0" data-bs-toggle="dropdown" aria-expanded="false">
                                                     <i class="bi bi-three-dots"></i>
                                                 </button>
-                                                <ul class="dropdown-menu">
-                                                    <li><a class="dropdown-item" href="{% url 'details' ticket.id %}">Details</a></li>
-                                                    <li><a class="dropdown-item" href="#">
-                                                        <form role="delete" action="{% url 'delete' ticket.id %}" method="get" onsubmit="return confirm('Do you really want to delete this ticket?');">
-                                                            {% csrf_token %}
-                                                            <i class="bi bi-trash3-fill text-danger"></i> <button class="text-danger btn btn-link text-decoration-none p-0 m-0" type="submit">Delete</button>
-                                                        </form>
-                                                    </a></li>
-                                                </ul>
                                                 
                                             </td>
                                         </tr>
                                         {% endfor %}
                                     </tbody>
-                                    {% endif %}
                                 </table>
+                                {% comment %} <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Title</th>
+                                        <th scope="col">Priority</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col">Owner</th>
+                                        <th scope="col">Created On</th>
+                                        <th scope="col"></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for ticket in page_obj %}
+                                        <tr>
+                                            <th scope="row"><a href="{% url 'details' ticket.id %}">{{ticket.id}}</a></th>
+                                            <td class="text-truncate">{{ ticket.title }}</td>
+                                            {% if ticket.get_priority_display == 'Low' %}
+                                            <td><span class="badge bg-primary-subtle text-primary-emphasis">{{ticket.get_priority_display}}</span></td>
+                                            {% elif ticket.get_priority_display == 'Medium' %}
+                                            <td><span class="badge bg-warning-subtle text-warning-emphasis">{{ticket.get_priority_display}}</span></td>
+                                            {% elif ticket.get_priority_display == 'High' %}
+                                            <td><span class="badge bg-danger-subtle text-danger-emphasis">{{ticket.get_priority_display}}</span></td>
+                                            {% endif %}
+                                            {% if ticket.status == 'CLOSED' %}
+                                                <td><span class="badge bg-black text-light">{{ticket.status}}<span></td>
+                                            {% else %}
+                                                <td><span class="badge bg-primary text-light">{{ticket.status}}<span></td>
+                                            {% endif %}
+                                            {% if ticket.owner.get_full_name %}
+                                            <td>{{ ticket.owner.get_full_name}}</td>
+                                            {% else %}
+                                            <td>{{ ticket.owner}}</td>
+                                            {% endif %}
+                                            <td>
+                                                {% load tz %}
+                                                <small>{{ ticket.creation_date | utc | date }}</small>
+                                            </td>
+                                            <td>
+                                                <button type="button" class="btn btn-white border-0 outline-0" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class="bi bi-three-dots"></i>
+                                                </button>
+                                                
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table> {% endcomment %}
                             </div>
                         </div>
-                      </div>
                     </div>
-                  </div>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
-  </main>
+</div>
 
+
+  
   <!-- Main Content End -->
   
 
