@@ -2,38 +2,52 @@ const urlParams = new URLSearchParams(window.location.search);
 
 var hideClosedFilterCheckbox = document.getElementById('hide-closed-filter');
 var sortSelectionBox = document.getElementById('sort-select-box');
+var resultsPerPageSelect = document.getElementById('results-per-page-select');
+
 
 setupSessions()
 
 //Set up our session storage information for filters and sorting (checkboxes, drop downs, etc.) so they persist through refreshes.
 function setupSessions() {
-    if (urlParams.has('filters')) {
+    //hideClosedFilterCheckbox.checked = sessionStorage.getItem('hideClosedChecked');
+    //sortSelectionBox.value = sessionStorage.getItem('sortSelection');
+    if (localStorage.getItem('results-per-page') != null )
+    {
+        resultsPerPageSelect.value = localStorage.getItem('results-per-page');
+    }
+    /*if (urlParams.has('filters')) {
         hideClosedFilterCheckbox.checked = sessionStorage.getItem('hideClosedChecked');
-    } else {
-        sessionStorage.removeItem('hideClosedChecked');
     }
     if (urlParams.has('sort')) {
         sortSelectionBox.value = sessionStorage.getItem('sortSelection');
-    } else {
-        sessionStorage.removeItem('sortSelection');
     }
+    if (urlParams.has('per_page')){
+        resultsPerPageSelect.value = sessionStorage.getItem('results-per-page');
+    }*/
+}
+
+function updateResults() {
+    var results = resultsPerPageSelect.value;
+    urlParams.set('per_page', results);
+    localStorage.setItem('results-per-page', results);
+    window.location.search = urlParams;
 }
 
 function updateSort() {
     var sortSelection = sortSelectionBox.value;
     urlParams.set('sort', sortSelection);
-    sessionStorage.setItem('sortSelection', sortSelection)
+    localStorage.setItem('sortSelection', sortSelection)
     window.location.search = urlParams;
 }
 
 function handleHideClosedTickets(checkbox) {
     if (checkbox.checked) {
-        sessionStorage.setItem('hideClosedChecked', true);
+        localStorage.setItem('hideClosedChecked', true);
         urlParams.set('filters', 'hideClosed')
         window.location.search = urlParams;
     } else {
         urlParams.delete('filters')
-        sessionStorage.removeItem('hideClosedChecked')
+        localStorage.removeItem('hideClosedChecked')
         window.location.search = urlParams;
     }
 }

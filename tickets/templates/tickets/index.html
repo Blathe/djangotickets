@@ -129,7 +129,7 @@
                                 <div class="col d-flex align-items-center justify-content-end gap-3">
                                     <div class="d-flex gap-3 align-items-center">
                                         <small class="p-0 m-0 flex-grow-1">Results Per Page:</small>
-                                        <select class="form-select" aria-label="Default select example">
+                                        <select id="results-per-page-select" onchange="updateResults()" class="form-select" aria-label="Default select example">
                                             <option value="5" selected>5</option>
                                             <option value="15">15</option>
                                             <option value="30">30</option>
@@ -179,9 +179,9 @@
                                             {% if ticket.get_priority_display == 'Low' %}
                                             <td><span class="badge bg-green text-primary-emphasis">{{ticket.get_priority_display}}</span></td>
                                             {% elif ticket.get_priority_display == 'Medium' %}
-                                            <td><span class="badge bg-blue text-warning-emphasis">{{ticket.get_priority_display}}</span></td>
+                                            <td><span class="badge bg-blue text-primary-emphasis">{{ticket.get_priority_display}}</span></td>
                                             {% elif ticket.get_priority_display == 'High' %}
-                                            <td><span class="badge bg-orange text-warning-emphasis">{{ticket.get_priority_display}}</span></td>
+                                            <td><span class="badge bg-orange text-danger-emphasis">{{ticket.get_priority_display}}</span></td>
                                             {% endif %}
                                             {% if ticket.status == 'CLOSED' %}
                                                 <td><span class="badge bg-green text-success-emphasis">{{ticket.status}}<span></td>
