@@ -8,7 +8,7 @@ def add_default_closed_dates(apps, schema_editor):
     Ticket = apps.get_model("tickets", "Ticket")
     for ticket in Ticket.objects.all():
         if ticket.status == "CLOSED":
-            ticket.closed_date = now
+            ticket.closed_date = now()
             ticket.save()
 
 class Migration(migrations.Migration):
