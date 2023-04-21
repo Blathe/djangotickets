@@ -18,13 +18,15 @@ from django.urls import path, include
 from django.contrib.auth import views as auth_views
 from django.views.decorators.csrf import csrf_exempt
 
-from tickets import views
+from tickets import views as ticket_views
+from reports import views as report_views
 
 urlpatterns = [
-    path('', views.index, name="index"),
+    path('', ticket_views.index, name="index"),
     path('tickets/', include('tickets.urls'), name="tickets"),
+    path('reports/', include('reports.urls'), name="reports"),
     path('admin/', admin.site.urls),
-    path('login/', views.user_login, name="login"),
+    path('login/', ticket_views.user_login, name="login"),
     #path('login/', auth_views.LoginView.as_view(), name="login"),
     path('logout/', auth_views.LogoutView.as_view(), name="logout")
 ]
