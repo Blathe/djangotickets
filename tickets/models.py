@@ -16,7 +16,7 @@ class Ticket(models.Model):
 
     title = models.CharField(max_length=200)
     description = models.TextField(max_length=600)
-    creation_date = models.DateTimeField(auto_now=True)
+    creation_date = models.DateTimeField(auto_now_add=True)
     closed_date = models.DateTimeField(blank=True, null=True)
     owner = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     status = models.CharField(choices=STATUS_CHOICES, max_length=20, default="OPEN")
