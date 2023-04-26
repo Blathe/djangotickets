@@ -57,7 +57,7 @@ def index(request):
     
 def csv_test(request):
     # Create the HttpResponse object with the appropriate CSV header.
-    file_name = "report-" + datetime.now
+    file_name = "report-{date}".format(date = timezone.now())
     response = HttpResponse(
         content_type="text/csv",
         headers={"Content-Disposition": 'attachment; filename="{file}"'.format(file = file_name)},

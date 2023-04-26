@@ -82,7 +82,17 @@
                                         {{ field }}
                                     </div>
                                 {% endfor %}
-                                <input type="submit" value="Submit">
+                                <div class="input-group mb-3">
+                                    <button type="submit" class="btn btn-outline-secondary">Preview Report</button>
+                                    <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                      <span class="visually-hidden">Toggle Dropdown</span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                      <li><a class="dropdown-item" href="test">Download CSV</a></li>
+                                    </ul>
+                                  </div>
+                                  
+                              
                             </form>
                         </div>
     
