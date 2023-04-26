@@ -1,11 +1,13 @@
-from django.shortcuts import render
-
-import csv
-
+from django.shortcuts import render, redirect
+from django.http import HttpResponse, HttpResponseRedirect
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
+from django.core.paginator import Paginator
 
-from django.http import HttpResponse
+import csv
+import datetime
+
 
 # Create your views here.
 
@@ -15,9 +17,10 @@ def index(request):
 
 def csv_test(request):
     # Create the HttpResponse object with the appropriate CSV header.
+    file_name = "report-" + datetime.now
     response = HttpResponse(
         content_type="text/csv",
-        headers={"Content-Disposition": 'attachment; filename="somefilename.csv"'},
+        headers={"Content-Disposition": 'attachment; filename="{file}"'.format(file = file_name)},
     )
 
     writer = csv.writer(response)
