@@ -55,9 +55,9 @@ def index(request):
                             all_tickets = all_tickets.filter(status = request.GET.get('filters'))
                     if (sort is not None):
                         if (sort == "default"):
-                            all_tickets = tickets.order_by("creation_date")
+                            all_tickets = all_tickets.order_by("creation_date")
                         else:
-                            all_tickets = tickets.order_by(sort)
+                            all_tickets = all_tickets.order_by(sort)
 
                     if (request.GET.get('per_page')):
                         paginator = Paginator(all_tickets, request.GET.get('per_page'))

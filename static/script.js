@@ -11,8 +11,7 @@ setupSessions()
 function setupSessions() {
     //hideClosedFilterCheckbox.checked = sessionStorage.getItem('hideClosedChecked');
     //sortSelectionBox.value = sessionStorage.getItem('sortSelection');
-    if (localStorage.getItem('results-per-page') != null )
-    {
+    if (localStorage.getItem('results-per-page') != null) {
         resultsPerPageSelect.value = localStorage.getItem('results-per-page');
     }
     /*if (urlParams.has('filters')) {
@@ -72,4 +71,80 @@ window.onload = (event) => {
     });
     toastList.forEach(toast => toast.show()); // show the toast
 
+}
+
+
+
+
+/* ------------- Reports Page Functionality ------------- */
+
+var reportTypeSelection = document.getElementById("report-type-select");
+
+//main form
+var byUserForm = document.getElementById("report-by-user-form");
+var byStatusForm = document.getElementById("report-by-status-form");
+
+var userSelectForm = document.getElementById("user-select");
+var statusSelect = document.getElementById("status-select");
+
+var generateReportButton = document.getElementById('generate-report-button');
+var generateReportDropdown = document.getElementById('generate-report-button-dropdown');
+
+function validateReportForm() {
+    switch (reportTypeSelection.value) {
+        case "by-user":
+            byUserForm.removeAttribute("hidden");
+            byStatusForm.setAttribute("hidden", true);
+            window.history.replaceState(null, null, '?type=by-user');
+            break;
+        case "by-status":
+            byStatusForm.removeAttribute("hidden");
+            byUserForm.setAttribute("hidden", true);
+            window.history.replaceState(null, null, '?type=by-status');
+            break;
+        case "by-date":
+            window.history.replaceState(null, null, '?type=by-date');
+            break;
+        default:
+            resetReportForm();
+            break;
+    }
+}
+
+function updateUserSelect() {
+    if (userSelectForm.value != null || userSelectForm.value != "") {
+        enableGenerateReportButtons();
+        window.history.replaceState(null, null, '?type=by-user&user=Guest');
+    } else {
+        disableGenerateReportButtons();
+        window.history.replaceState(null, null, '?type=by-user');
+    }
+}
+
+function updateStatusSelect() {
+    if (statusSelect.value != null || statusSelect.value != "") {
+        enableGenerateReportButtons();
+        window.history.replaceState(null, null, '?type=by-user&user=Guest');
+    } else {
+        disableGenerateReportButtons();
+        window.history.replaceState(null, null, '?type=by-status');
+    }
+}
+
+function disableGenerateReportButtons() {
+    generateReportButton.setAttribute('disabled', true);
+    generateReportDropdown.setAttribute('disabled', true);
+}
+
+function enableGenerateReportButtons() {
+    generateReportButton.removeAttribute('disabled');
+    generateReportDropdown.removeAttribute('disabled');
+}
+
+
+function resetReportForm() {
+    byUserForm.setAttribute("hidden", true);
+    byStatusForm.setAttribute("hidden", true);
+    disableGenerateReportButtons();
+    window.history.replaceState(null, null, '/');
 }

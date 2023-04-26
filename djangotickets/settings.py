@@ -64,6 +64,7 @@ INSTALLED_APPS = [
 
     'tickets.apps.TicketsConfig',
     'django_extensions',
+    'reports',
 ]
 
 MIDDLEWARE = [
