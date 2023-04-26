@@ -15,17 +15,17 @@ main {
 .bg-blue {
     background-color: #03a9f4;
 }
+
 .bg-orange {
     background-color: #fa9f1b;
 }
 
-@media (max-width: 768px) { 
+@media (max-width: 768px) {
     .sidebar {
         height: 20px;
         min-height: 0px;
         max-height: 0px;
     }
-
     #bootstrap-overrides .min-vh-100 {
         height: 400px;
         min-height: 5px;
