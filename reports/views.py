@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 
-from django.utils.timezone import now
+from django.utils import timezone
 
 import csv
 import datetime
@@ -33,6 +33,11 @@ def index(request):
                 
             if status != "ANY":
                 all_tickets = all_tickets.filter(status = status)
+
+            if time == "LAST 7 DAYS":
+                all_tickets = all_tickets.filter(creation_date__range=[timezone.now() - timezone.timedelta(days=7), timezone.now()])
+            elif time == "LAST 30 DAYS":
+                all_tickets = all_tickets.filter(creation_date__range=[timezone.now() - timezone.timedelta(days=30), timezone.now()])
             
             if group_by == "PRIORITY":
                 all_tickets = all_tickets.order_by("priority")
