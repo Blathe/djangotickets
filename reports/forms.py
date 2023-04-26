@@ -27,10 +27,10 @@ class ReportGenerationForm(forms.Form):
         ('PRIORITY', 'Priority')
     )
       
-    user = UserChoiceField(queryset=User.objects.filter(is_superuser=False), empty_label="All", required=False)
-    status = forms.ChoiceField(choices = STATUS_CHOICES, required=False)
-    time = forms.ChoiceField(choices = TIME_CHOICES, initial='ALL TIME')
-    group_by = forms.ChoiceField(choices = GROUP_BY_CHOICES, initial='PRIORITY')
+    user = UserChoiceField(queryset=User.objects.filter(is_superuser=False), empty_label="Any", required=False, label="Select User:")
+    status = forms.ChoiceField(choices = STATUS_CHOICES, required=False, label="Ticket Status:")
+    time = forms.ChoiceField(choices = TIME_CHOICES, initial='ALL TIME', label="Date Created:")
+    group_by = forms.ChoiceField(choices = GROUP_BY_CHOICES, initial='PRIORITY', label="Group By:")
     
     
     
