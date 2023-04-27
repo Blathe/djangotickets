@@ -75,19 +75,39 @@
                         <div class="card-body">
                             <form action="{% url 'index' %}" method="post">
                                 {% csrf_token %}
-                                <div class="form-group">
-                                    {{ form.user }}
+                                <div class="row">
+                                    <div class="col-12 col-md-2">
+                                        {{ form.user.label }}
+                                    </div>
+                                    <div class="col-12 col-md-4">
+                                        {{ form.user }}
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    {{ form.status }}
+                                <div class="row mt-4">
+                                    <div class="col-12 col-md-2">
+                                        {{ form.status.label }}
+                                    </div>
+                                    <div class="col-12 col-md-4">
+                                        {{ form.status }}
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    {{ form.time }}
+                                <div class="row mt-4">
+                                    <div class="col-12 col-md-2">
+                                        {{ form.time.label }}
+                                    </div>
+                                    <div class="col-12 col-md-4">
+                                        {{ form.time }}
+                                        </div>
                                 </div>
-                                <div class="form-group">
+                                <div class="row mt-4">
+                                    <div class="col-12 col-md-2">
+                                        {{ form.group_by.label }}
+                                    </div>
+                                    <div class="col-12 col-md-4">
                                     {{ form.group_by }}
+                                    </div>
                                 </div>
-                                <div class="mb-3">
+                                <div class="mt-4 mb-3">
                                     <button type="submit" class="btn btn-primary">Preview Report</button>
                                     {% if page_obj %}
                                     <button type="submit" class="btn btn-primary" name="download-csv">Download CSV</button>

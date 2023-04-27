@@ -27,13 +27,13 @@ class ReportGenerationForm(forms.Form):
         ('PRIORITY', 'Priority')
     )
       
-    user = UserChoiceField(queryset=User.objects.filter(is_superuser=False), empty_label="Any", required=False, label="Select User:",
+    user = UserChoiceField(queryset=User.objects.all(), empty_label="Any", required=False, label="Ticket Owner",
     widget=forms.Select(attrs={'class': 'form-select'}))
-    status = forms.ChoiceField(choices = STATUS_CHOICES, required=False, label="Ticket Status:",
+    status = forms.ChoiceField(choices = STATUS_CHOICES, required=False, label="Ticket Status",
     widget=forms.Select(attrs={'class': 'form-select'}))
-    time = forms.ChoiceField(choices = TIME_CHOICES, initial='ALL TIME', label="Date Created:",
+    time = forms.ChoiceField(choices = TIME_CHOICES, initial='ALL TIME', label="Date Created",
     widget=forms.Select(attrs={'class': 'form-select'}))
-    group_by = forms.ChoiceField(choices = GROUP_BY_CHOICES, initial='PRIORITY', label="Group By:",
+    group_by = forms.ChoiceField(choices = GROUP_BY_CHOICES, initial='PRIORITY', label="Group By",
     widget=forms.Select(attrs={'class': 'form-select'}))
     
     
