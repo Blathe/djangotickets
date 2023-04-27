@@ -73,26 +73,26 @@
                         </div>
     
                         <div class="card-body">
-                            <form action="/reports/" method="post">
+                            <form action="{% url 'index' %}" method="post">
                                 {% csrf_token %}
-                                {% for field in form %}
-                                    <div class="form-control">
-                                        {{ field.errors }}
-                                        {{ field.label_tag }} 
-                                        {{ field }}
-                                    </div>
-                                {% endfor %}
-                                <div class="input-group mb-3">
-                                    <button type="submit" class="btn btn-outline-secondary">Preview Report</button>
-                                    <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
-                                      <span class="visually-hidden">Toggle Dropdown</span>
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                      <li><a class="dropdown-item" href="test">Download CSV</a></li>
-                                    </ul>
+                                <div class="form-group">
+                                    {{ form.user }}
+                                </div>
+                                <div class="form-group">
+                                    {{ form.status }}
+                                </div>
+                                <div class="form-group">
+                                    {{ form.time }}
+                                </div>
+                                <div class="form-group">
+                                    {{ form.group_by }}
+                                </div>
+                                <div class="mb-3">
+                                    <button type="submit" class="btn btn-primary">Preview Report</button>
+                                    {% if page_obj %}
+                                    <button type="submit" class="btn btn-primary" name="download-csv">Download CSV</button>
+                                    {% endif %}
                                   </div>
-                                  
-                              
                             </form>
                         </div>
     
@@ -106,7 +106,7 @@
 
             <div class="row mt-2">
                 <div class="col">
-                    <div class="card">
+                    <div class="card mb-2">
                         <div class="card-header">
                             <div class="row">
                                 <div class="col">
@@ -139,47 +139,30 @@
                         <div class="card-body">
                             <div class="table-responsive p-0">
                                 {% if page_obj %}
-                                <table class="table text-align-middle">
+                                <table class="table table-bordered">
                                     <tbody>
-                                        <tr>
+                                        <tr class="text-center">
                                             <th scope="col">#</th>
                                             <th scope="col">Title</th>
                                             <th scope="col">Priority</th>
                                             <th scope="col">Status</th>
                                             <th scope="col">Owner</th>
                                             <th scope="col">Created On</th>
-                                            <th scope="col"></th>
                                         </tr>
                                         {% for ticket in page_obj %}
                                         <tr>
-                                            <th scope="row"><a href="{% url 'details' ticket.id %}">{{ticket.id}}</a></th>
-                                            <td class="text-truncate">{{ ticket.title }}</td>
-                                            {% if ticket.get_priority_display == 'Low' %}
-                                            <td><span class="badge bg-green text-primary-emphasis">{{ticket.get_priority_display}}</span></td>
-                                            {% elif ticket.get_priority_display == 'Medium' %}
-                                            <td><span class="badge bg-blue text-primary-emphasis">{{ticket.get_priority_display}}</span></td>
-                                            {% elif ticket.get_priority_display == 'High' %}
-                                            <td><span class="badge bg-orange text-danger-emphasis">{{ticket.get_priority_display}}</span></td>
-                                            {% endif %}
-                                            {% if ticket.status == 'CLOSED' %}
-                                                <td><span class="badge bg-green text-success-emphasis">{{ticket.status}}<span></td>
-                                            {% else %}
-                                                <td><span class="badge bg-blue text-primary-emphasis">{{ticket.status}}<span></td>
-                                            {% endif %}
+                                            <th scope="row" class="text-center">{{ticket.id}}</th>
+                                            <td scope="row" colspan="1">{{ ticket.title }}</td>
+                                            <td class="text-center">{{ticket.get_priority_display}}</td>
+                                            <td class="text-center">{{ticket.status}}</td>
                                             {% if ticket.owner.get_full_name %}
-                                            <td>{{ ticket.owner.get_full_name}}</td>
+                                            <td class="text-center">{{ ticket.owner.get_full_name}}</td>
                                             {% else %}
-                                            <td>{{ ticket.owner}}</td>
+                                            <td class="text-center">{{ ticket.owner}}</td>
                                             {% endif %}
-                                            <td>
+                                            <td class="text-center">
                                                 {% load tz %}
                                                 <small>{{ ticket.creation_date | utc | date }}</small>
-                                            </td>
-                                            <td>
-                                                <button type="button" class="btn btn-white border-0 outline-0" data-bs-toggle="dropdown" aria-expanded="false">
-                                                    <i class="bi bi-three-dots"></i>
-                                                </button>
-                                                
                                             </td>
                                         </tr>
                                         {% endfor %}
