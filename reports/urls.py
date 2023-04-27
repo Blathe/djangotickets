@@ -5,5 +5,5 @@ from . import views
 # /reports*
 urlpatterns = [
     path('', views.index, name="index"),
-    path('test', views.csv_test, name="csv"),
+    path('csv', views.csv_test, name="csv"),
 ]
