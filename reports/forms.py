@@ -16,9 +16,9 @@ class ReportGenerationForm(forms.Form):
     )
     
     TIME_CHOICES = (
+        ('ALL TIME', 'All Time'),
         ('LAST 7 DAYS', 'Last 7 Days'),
         ('LAST 30 DAYS', 'Last 30 Days'),
-        ('ALL TIME', 'All Time')
     )
     
     GROUP_BY_CHOICES = (
