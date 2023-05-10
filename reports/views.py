@@ -47,18 +47,24 @@ def index(request):
                 
             """ if the user clicks the download CSV button """
             if "download-csv" in request.POST:
-                if request.POST.get('name') is not None:
+                
+                if request.POST.get('name') is not None and request.POST.get('name') != "":
+                    print(request.POST.get('name'))
                     file_name = request.POST.get('name')
                 else:
                     file_name = "TicketReport-{date}".format(date = timezone.now().strftime("%Y-%m-%d"))
+                    
                 response = HttpResponse(
                     content_type="text/csv",
                     headers={"Content-Disposition": 'attachment; filename="{file}"'.format(file = file_name)},
                 )
+                
                 writer = csv.writer(response)
                 writer.writerow(["Ticket ID", "Ticket Name", "Owner", "Created On", "Priority", "Status", "Date Closed"])
+                
                 for ticket in all_tickets:
                     writer.writerow([ticket.id, ticket.title, ticket.owner, ticket.creation_date, ticket.priority, ticket.status, ticket.closed_date])
+                    
                 return response
             else: 
                 paginator = Paginator(all_tickets, 100)
