@@ -16,9 +16,9 @@ class ReportGenerationForm(forms.Form):
     )
     
     TIME_CHOICES = (
+        ('ALL TIME', 'All Time'),
         ('LAST 7 DAYS', 'Last 7 Days'),
         ('LAST 30 DAYS', 'Last 30 Days'),
-        ('ALL TIME', 'All Time')
     )
     
     GROUP_BY_CHOICES = (
@@ -27,6 +27,7 @@ class ReportGenerationForm(forms.Form):
         ('PRIORITY', 'Priority')
     )
       
+    ### Define our form fields ###
     name = forms.CharField(max_length=120, required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
     user = UserChoiceField(queryset=User.objects.all(), empty_label="Any", required=False, label="Ticket Owner",
     widget=forms.Select(attrs={'class': 'form-select'}))

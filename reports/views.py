@@ -14,6 +14,11 @@ from .forms import ReportGenerationForm
 
 # Create your views here.
 
+
+### 
+# This is the index view for the Reports page. 
+# It handles displaying the reports page as well as taking in the form data to generate reports 
+###
 @login_required
 def index(request):
     if request.method == "POST":
