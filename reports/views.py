@@ -25,7 +25,6 @@ def index(request):
         form = ReportGenerationForm(request.POST)
         
         if form.is_valid():
-            
             user = form.cleaned_data['user']
             status = form.cleaned_data['status']
             group_by = form.cleaned_data['group_by']
@@ -50,17 +49,27 @@ def index(request):
                 all_tickets = all_tickets.order_by("owner")
             elif group_by == "STATUS":
                 all_tickets = all_tickets.order_by("status")
-
+                
+            """ if the user clicks the download CSV button """
             if "download-csv" in request.POST:
-                file_name = "report-{date}".format(date = timezone.now())
+                
+                if request.POST.get('name') is not None and request.POST.get('name') != "":
+                    print(request.POST.get('name'))
+                    file_name = request.POST.get('name')
+                else:
+                    file_name = "TicketReport-{date}".format(date = timezone.now().strftime("%Y-%m-%d"))
+                    
                 response = HttpResponse(
                     content_type="text/csv",
                     headers={"Content-Disposition": 'attachment; filename="{file}"'.format(file = file_name)},
                 )
+                
                 writer = csv.writer(response)
                 writer.writerow(["Ticket ID", "Ticket Name", "Owner", "Created On", "Priority", "Status", "Date Closed"])
+                
                 for ticket in all_tickets:
                     writer.writerow([ticket.id, ticket.title, ticket.owner, ticket.creation_date, ticket.priority, ticket.status, ticket.closed_date])
+                    
                 return response
             else: 
                 paginator = Paginator(all_tickets, 100)

@@ -77,6 +77,14 @@
                                 {% csrf_token %}
                                 <div class="row">
                                     <div class="col-12 col-md-2">
+                                        Report Name (optional)
+                                    </div>
+                                    <div class="col-12 col-md-4">
+                                        {{ form.name }}
+                                    </div>
+                                </div>
+                                <div class="row mt-4">
+                                    <div class="col-12 col-md-2">
                                         {{ form.user.label }}
                                     </div>
                                     <div class="col-12 col-md-4">
