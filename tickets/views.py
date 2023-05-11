@@ -10,8 +10,9 @@ from .forms import TicketForm, CommentForm
 from .models import Ticket, Comment
 
 
-#index page
-#/
+#
+# index page
+#
 def index(request):
     if request.method == "GET":
         if request.user.is_authenticated:
@@ -112,8 +113,13 @@ def details(request, pk):
     if request.method == "GET":
         if request.user.is_authenticated:
             ticket = Ticket.objects.get(pk=pk)
+            comment = Comment()
+            comment.owner = request.user
+            comment.ticket = ticket
+            comment.tag = 'CLOSED' #set tag to closed to display a badge next to the comment.
+            form = CommentForm(request.POST)
             comments = Comment.objects.all().filter(ticket = ticket).order_by('-creation_date')
-            return render(request, 'tickets/details.html', {'ticket':ticket, 'comments':comments})
+            return render(request, 'tickets/details.html', {'ticket':ticket, 'comments':comments, 'form': form})
         return render(request, 'tickets/index.html')
 
 #/tickets/create/
@@ -143,7 +149,7 @@ def open(request, pk):
             comment.owner = request.user
             comment.ticket = ticket
             comment.tag = 'REOPENED' #set tag to reopened to display a badge next to the comment
-            form = CommentForm(request.POST, instance=comment)
+            form = CommentForm(request.POST)
             if form.is_valid():
                 form.save()
                 messages.add_message(request, messages.SUCCESS, 'You have successfully reopened ticket #{id}'.format(id = ticket.id))
@@ -166,7 +172,7 @@ def close(request, pk):
             comment.owner = request.user
             comment.ticket = ticket
             comment.tag = 'CLOSED' #set tag to closed to display a badge next to the comment.
-            form = CommentForm(request.POST, instance=comment)
+            form = CommentForm(request.POST)
             if form.is_valid():
                 form.save()
                 messages.add_message(request, messages.SUCCESS, 'You have successfully closed ticket {id}'.format(id = ticket.id))

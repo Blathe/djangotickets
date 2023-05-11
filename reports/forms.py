@@ -27,6 +27,7 @@ class ReportGenerationForm(forms.Form):
         ('PRIORITY', 'Priority')
     )
       
+    ### Define our form fields ###
     user = UserChoiceField(queryset=User.objects.all(), empty_label="Any", required=False, label="Ticket Owner",
     widget=forms.Select(attrs={'class': 'form-select'}))
     status = forms.ChoiceField(choices = STATUS_CHOICES, required=False, label="Ticket Status",

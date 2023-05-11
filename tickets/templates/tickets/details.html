@@ -74,6 +74,20 @@
                       
                 </div>
             </div>
+
+            <div class="row mt-2 g-2"> 
+                <div class="col">
+                    <div class="card">
+                        <div class="card-header">
+                            Ticket Description:
+                        </div>
+                        <div class="card-body">
+                            {{ ticket.description }}
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
             <!-- Buttons Section End -->
 
             <div class="row mt-2 g-2">
@@ -113,6 +127,24 @@
                             </div>
                         </div>
                     </div>
+                    {% if ticket.status != "CLOSED" %}
+                    <div class="card mt-2">
+                        <div class="card-header">
+                            <p class="m-0 p-0">Add A Comment:</p>
+                        </div>
+                        <div class="card-body">
+                            <form role="comment" action="{% url 'comment' ticket.id %}" method="POST">
+                                <div class="row">
+                                    <div class="col">
+                                        {% csrf_token %}
+                                        {{ form.body }}
+                                        <button type="submit" class="btn btn-primary mt-2">Submit</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    {% endif %}
                 </div>
                 <div class="col-12 col-md-5 order-1 order-md-2">
                     <div class="card">
