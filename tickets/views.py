@@ -18,7 +18,6 @@ def index(request):
         if request.user.is_authenticated:
             # This should probably be done differently on a larger product with more data but it will work for now.
             all_tickets = Ticket.objects.all()
-            all_ticket_count = all_tickets.count
             open_tickets = all_tickets.filter(status = "OPEN")
             closed_tickets = all_tickets.filter(status = "CLOSED")
             your_tickets = all_tickets.filter(owner = request.user)
@@ -47,7 +46,7 @@ def index(request):
                     if (filtered_tickets.count() == 0):
                         messages.add_message(request, messages.WARNING, 'No ticket found with id: {search}.'.format(search=query))                    
 
-                    return render(request, 'tickets/index.html', {'page_obj': page_obj, 'search_results': page_obj.paginator.count, 'open_tickets': open_tickets, 'closed_tickets' : closed_tickets, 'your_tickets' : your_tickets, 'total_tickets' : all_ticket_count})
+                    return render(request, 'tickets/index.html', {'page_obj': page_obj, 'search_results': page_obj.paginator.count, 'open_tickets': open_tickets, 'closed_tickets' : closed_tickets, 'your_tickets' : your_tickets})
             else:
                 if request.GET.get('filters') is not None or request.GET.get('sort') is not None:
                     filters = request.GET.get('filters')
@@ -69,7 +68,7 @@ def index(request):
                     page_number = request.GET.get('page')
                     page_obj = paginator.get_page(page_number)
                         
-                    return render(request, 'tickets/index.html', {'page_obj': page_obj, 'search_results': page_obj.paginator.count, 'open_tickets': open_tickets, 'closed_tickets' : closed_tickets, 'your_tickets' : your_tickets, 'total_tickets' : all_ticket_count})
+                    return render(request, 'tickets/index.html', {'page_obj': page_obj, 'search_results': page_obj.paginator.count, 'open_tickets': open_tickets, 'closed_tickets' : closed_tickets, 'your_tickets' : your_tickets})
                 else:    
                     if request.GET.get('my_tickets') is not None:
                         if request.GET.get('my_tickets') == "true":
@@ -85,7 +84,7 @@ def index(request):
                 page_number = request.GET.get('page')
                 page_obj = paginator.get_page(page_number)
 
-                return render(request, 'tickets/index.html', {'page_obj': page_obj, 'search_results': page_obj.paginator.count, 'open_tickets': open_tickets, 'closed_tickets' : closed_tickets, 'your_tickets' : your_tickets, 'total_tickets' : all_ticket_count})
+                return render(request, 'tickets/index.html', {'page_obj': page_obj, 'search_results': page_obj.paginator.count, 'open_tickets': open_tickets, 'closed_tickets' : closed_tickets, 'your_tickets' : your_tickets})
         else:
             return HttpResponseRedirect('/login')
     return render(request, 'tickets/index.html')       
@@ -196,9 +195,9 @@ def comment(request, pk):
             comment = Comment()
             comment.owner = request.user
             comment.ticket = ticket
-            form = CommentForm(request.POST, instance=comment)
+            form = CommentForm(request.POST)
             if form.is_valid():
-                form.save()
+                comment.save()
                 messages.add_message(request, messages.SUCCESS, 'Success! Your comment has been added.')
                 return HttpResponseRedirect('/tickets/details/{id}'.format(id = pk))
             else:
