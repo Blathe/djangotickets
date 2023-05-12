@@ -21,6 +21,7 @@ def index(request):
             open_tickets = all_tickets.filter(status = "OPEN")
             closed_tickets = all_tickets.filter(status = "CLOSED")
             your_tickets = all_tickets.filter(owner = request.user)
+            total_ticket_count = all_tickets.count
             
             if request.GET.get('search') is not None:
                 query = request.GET.get('search')
@@ -46,7 +47,7 @@ def index(request):
                     if (filtered_tickets.count() == 0):
                         messages.add_message(request, messages.WARNING, 'No ticket found with id: {search}.'.format(search=query))                    
 
-                    return render(request, 'tickets/index.html', {'page_obj': page_obj, 'search_results': page_obj.paginator.count, 'open_tickets': open_tickets, 'closed_tickets' : closed_tickets, 'your_tickets' : your_tickets})
+                    return render(request, 'tickets/index.html', {'page_obj': page_obj, 'search_results': page_obj.paginator.count, 'open_tickets': open_tickets, 'closed_tickets' : closed_tickets, 'your_tickets' : your_tickets, 'total_tickets' : total_ticket_count})
             else:
                 if request.GET.get('filters') is not None or request.GET.get('sort') is not None:
                     filters = request.GET.get('filters')
@@ -68,7 +69,7 @@ def index(request):
                     page_number = request.GET.get('page')
                     page_obj = paginator.get_page(page_number)
                         
-                    return render(request, 'tickets/index.html', {'page_obj': page_obj, 'search_results': page_obj.paginator.count, 'open_tickets': open_tickets, 'closed_tickets' : closed_tickets, 'your_tickets' : your_tickets})
+                    return render(request, 'tickets/index.html', {'page_obj': page_obj, 'search_results': page_obj.paginator.count, 'open_tickets': open_tickets, 'closed_tickets' : closed_tickets, 'your_tickets' : your_tickets, 'total_tickets' : total_ticket_count})
                 else:    
                     if request.GET.get('my_tickets') is not None:
                         if request.GET.get('my_tickets') == "true":
@@ -84,7 +85,7 @@ def index(request):
                 page_number = request.GET.get('page')
                 page_obj = paginator.get_page(page_number)
 
-                return render(request, 'tickets/index.html', {'page_obj': page_obj, 'search_results': page_obj.paginator.count, 'open_tickets': open_tickets, 'closed_tickets' : closed_tickets, 'your_tickets' : your_tickets})
+                return render(request, 'tickets/index.html', {'page_obj': page_obj, 'search_results': page_obj.paginator.count, 'open_tickets': open_tickets, 'closed_tickets' : closed_tickets, 'your_tickets' : your_tickets, 'total_tickets' : total_ticket_count})
         else:
             return HttpResponseRedirect('/login')
     return render(request, 'tickets/index.html')       
