@@ -9,5 +9,5 @@ class TicketForm(ModelForm):
         fields = ['title','description', 'priority']
 
 class CommentForm(forms.Form):
-    body = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control'}))
+    body = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows' : '3'}))
         

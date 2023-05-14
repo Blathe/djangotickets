@@ -198,6 +198,7 @@ def comment(request, pk):
             comment.ticket = ticket
             form = CommentForm(request.POST)
             if form.is_valid():
+                comment.body = form.cleaned_data['body']
                 comment.save()
                 messages.add_message(request, messages.SUCCESS, 'Success! Your comment has been added.')
                 return HttpResponseRedirect('/tickets/details/{id}'.format(id = pk))
