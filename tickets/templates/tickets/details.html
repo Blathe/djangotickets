@@ -14,14 +14,14 @@
     <title>Django Ticket Manager - Details</title>
 </head>
 
-<body class="d-flex flex-column bg-secondary-subtle overflow-hidden">
+<body class="d-flex flex-column bg-secondary-subtle overflow-hidden-sm" style="min-height: 100vh;">
        
 
   <!-- Main Content Start -->
 
   <div class="container-fluid">
-    <div class="row" style="max-height: 100vh;">
-        <div class="col-12 col-md-3 col-lg-3 col-xl-2 px-sm-2 px-0 bg-dark flex-grow-1" style="max-height: 100vh;">
+    <div class="row vh-100" style="max-height: 100vh;">
+        <div class="col-12 col-md-3 col-lg-3 col-xl-2 px-sm-2 px-0 bg-dark flex-grow-1">
             <div class="d-flex flex-column align-items-sm-start px-3 pt-3 pb-3 text-white h-100">
                 <a href="/" class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
                     <span class="fs-5 d-sm-inline">Django Ticket Manager</span>
@@ -51,7 +51,7 @@
             </div>
         </div>
 
-        <div class="col col-md-9 col-lg-9 col-xl-10">
+        <div class="col col-md-9 col-lg-9 col-xl-10 h-100">
 
             <!-- Search Box Section Start -->
             <div class="row bg-white border-bottom p-4">
@@ -81,7 +81,7 @@
                 <div class="col">
                     <div class="card">
                         <div class="card-header">
-                            Ticket Description:
+                            <strong>{{ ticket.title }}</strong>
                         </div>
                         <div class="card-body">
                             {{ ticket.description }}
@@ -160,25 +160,35 @@
                 <div class="col-12 col-md-5 order-1 order-md-2">
                     <div class="card">
                         <div class="card-header d-flex flex-row align-items-center gap-2">
-                            <p class="m-0 p-0">Ticket Details</p> {% if ticket.status == 'CLOSED' %} <span class="badge bg-orange text-danger-emphasis">CLOSED<span> {%endif%}
+                            <p class="m-0 p-0">Ticket Details</p>
                         </div>
                         <div class="card-body">
                             <div class="row">
                                 <div class="col">
-                                    <p><strong>Title:</strong></p>
+                                    <p><strong>Status:</strong></p>
                                     <p><strong>Created By:</strong></p>
                                     <p><strong>Priority:</strong></p>
                                     <p><strong>Date Opened:</strong></p>
                                     <p><strong>Date Closed:</strong></p>
                                 </div>
                                 <div class="col-9">
-                                    <p>{{ticket.title}}</p>
+                                    {% if ticket.status == "OPEN" %}
+                                    <p><span class="badge bg-green">{{ ticket.status }}</span></p>
+                                    {% else %}
+                                    <p><span class="badge bg-orange">{{ ticket.status }}</span></p>
+                                    {% endif %}
                                     {% if ticket.owner.first_name %}
                                     <p>{{ticket.owner.first_name }}</p>
                                     {% else %}
                                     <p>{{ticket.owner }}</p>
                                     {% endif %}
-                                    <p>{{ticket.get_priority_display}}</p>
+                                    {% if ticket.priority == 1 %}
+                                    <p><span class="badge bg-green">{{ ticket.get_priority_display }}</span></p>
+                                    {% elif ticket.priority == 2 %}
+                                    <p><span class="badge bg-blue">{{ ticket.get_priority_display }}</span></p>
+                                    {% else %}
+                                    <p><span class="badge bg-orange">{{ ticket.get_priority_display }}</span></p>
+                                    {% endif %}
                                     <p>{{ticket.creation_date}}</p>
                                     <p>{{ticket.closed_date}}</p>
                                 </div>
