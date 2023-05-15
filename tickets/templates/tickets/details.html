@@ -14,7 +14,7 @@
     <title>Django Ticket Manager - Details</title>
 </head>
 
-<body class="d-flex flex-column bg-secondary-subtle vh-100 overflow-hidden-sm" style="min-height: 100vh; max-height: 100vh;">
+<body class="d-flex flex-column bg-secondary-subtle vh-100" style="min-height: 100vh; max-height: 100vh;">
        
 
   <!-- Main Content Start -->
@@ -51,8 +51,7 @@
             </div>
         </div>
 
-        <div class="col col-md-9 col-lg-9 col-xl-10 h-100">
-
+        <div class="col col-md-9 col-lg-9 col-xl-10 h-100 overflow-scroll" style="max-height: 100vh;">
             <!-- Search Box Section Start -->
             <div class="row bg-white border-bottom p-4">
                 <div class="input-group p-0">
@@ -62,142 +61,146 @@
             </div>
             <!-- Search Box Section End -->
 
-            <!-- Breadcrum Section Start -->
-            <div class="row mt-2 g-2">
-                <div class="col">
-                    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
-                        <ol class="breadcrumb">
-                          <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
-                          <li class="breadcrumb-item active" aria-current="page">Ticket: #{{ticket.id}}</li>
-                        </ol>
-                      </nav>
-                      
-                </div>
-            </div>
-            <!-- Breadcrum Section End -->
+            <div class="d-flex flex-column flex-grow-1 h-100">
 
-            <!-- Ticket Description Start -->
-            <div class="row g-2"> 
-                <div class="col">
-                    <div class="card">
-                        <div class="card-header">
-                            <strong>{{ ticket.title }}</strong>
+                <!-- Breadcrum Section Start -->
+                <div class="row mt-2 g-2">
+                    <div class="col">
+                        <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Ticket: #{{ticket.id}}</li>
+                            </ol>
+                        </nav>
+                        
+                    </div>
+                </div>
+                <!-- Breadcrum Section End -->
+
+                <!-- Ticket Description Start -->
+                <div class="row g-2"> 
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-header">
+                                <strong>{{ ticket.title }}</strong>
+                            </div>
+                            <div class="card-body">
+                                {{ ticket.description }}
+                            </div>
                         </div>
-                        <div class="card-body">
-                            {{ ticket.description }}
+                        
+                    </div>
+                </div>
+                <!-- Ticket Description End -->
+
+                <!-- Comements / Details Start -->
+
+                <div class="row mt-2 mb-2 g-2">
+                    <div class="col-12 col-md-7 order-2 order-md-1 pb-2">
+                        <div class="card" style="height: 90%;">
+                            <div class="card-header">
+                                <p class="m-0 p-0">Comments ({{comments.count}})</p>
+                            </div>
+                            <div class="card-body overflow-scroll">
+                                <div class="p-0">
+                                    <ul class="list-group list-group-flush">
+                                        {% if comments %}
+                                            {% for comment in comments %}
+                                            <li class="list-group-item">
+                                                <div class="row p-2">
+                                                    <div class="col-auto">
+                                                        <i class="bi bi-person-circle fs-1"></i>
+                                                    </div>
+                                                    <div class="col">
+                                                        <small class="m-0 p-0">{{comment.creation_date}} 
+                                                            {% if comment.tag == 'CLOSED' %} 
+                                                            <span class="badge bg-orange text-danger-emphasis">Ticket Closed<span>
+                                                            {% elif comment.tag == 'REOPENED' %}
+                                                            <span class="badge bg-blue text-primary-emphasis">Ticket Reopened<span>
+                                                            {%endif%}
+                                                        </small>
+                                                        {% if comment.owner.first_name %}
+                                                        <p class="m-0 p-0"><strong>{{comment.owner.first_name}}</strong></p>
+                                                        {% else %}
+                                                        <p class="m-0 p-0"><strong>{{comment.owner}}</strong></p>
+                                                        {% endif %}
+                                                        <p class="m-0 p-0">{{comment.body}}</p>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            {% endfor %}
+                                        {% else %}
+                                        <li class="list-group-item">
+                                            <p>No comments...</p>
+                                        </li>
+                                        {% endif %}
+                                    </ul>                                      
+                                </div>
+                            </div>
+                            {% if ticket.status != "CLOSED" %}
+                            <div class="card-footer">
+                                Add Comment:
+                                <form role="comment" action="{% url 'comment' ticket.id %}" method="POST">
+                                    <div class="row">
+                                        <div class="col">
+                                            {% csrf_token %}
+                                            <div class="input-group">
+                                            {{ form.body }}
+                                            </div>
+                                            <button type="submit" class="btn btn-primary mt-2">Submit</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            {% endif %}
                         </div>
                     </div>
                     
-                </div>
-            </div>
-            <!-- Ticket Description End -->
-
-            <!-- Comements / Details Start -->
-
-            <div class="row mt-2 mb-2 g-2">
-                <div class="col-12 col-md-7 order-2 order-md-1">
-                    <div class="card h-50">
-                        <div class="card-header">
-                            <p class="m-0 p-0">Comments ({{comments.count}})</p>
-                        </div>
-                        <div class="card-body overflow-scroll">
-                            <div class="p-0">
-                                <ul class="list-group list-group-flush">
-                                    {% if comments %}
-                                        {% for comment in comments %}
-                                        <li class="list-group-item">
-                                            <div class="row p-2">
-                                                <div class="col-auto">
-                                                    <i class="bi bi-person-circle fs-1"></i>
-                                                </div>
-                                                <div class="col">
-                                                    <small class="m-0 p-0">{{comment.creation_date}} 
-                                                        {% if comment.tag == 'CLOSED' %} 
-                                                        <span class="badge bg-orange text-danger-emphasis">Ticket Closed<span>
-                                                        {% elif comment.tag == 'REOPENED' %}
-                                                        <span class="badge bg-blue text-primary-emphasis">Ticket Reopened<span>
-                                                        {%endif%}
-                                                    </small>
-                                                    {% if comment.owner.first_name %}
-                                                    <p class="m-0 p-0"><strong>{{comment.owner.first_name}}</strong></p>
-                                                    {% else %}
-                                                    <p class="m-0 p-0"><strong>{{comment.owner}}</strong></p>
-                                                    {% endif %}
-                                                    <p class="m-0 p-0">{{comment.body}}</p>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        {% endfor %}
-                                    {% else %}
-                                    <li class="list-group-item">
-                                        <p>No comments...</p>
-                                    </li>
-                                    {% endif %}
-                                  </ul>                                      
+                    <div class="col-12 col-md-5 order-1 order-md-2">
+                        <div class="card">
+                            <div class="card-header d-flex flex-row align-items-center gap-2">
+                                <p class="m-0 p-0">Ticket Details</p>
                             </div>
-                        </div>
-                        {% if ticket.status != "CLOSED" %}
-                        <div class="card-footer">
-                            Add Comment:
-                            <form role="comment" action="{% url 'comment' ticket.id %}" method="POST">
+                            <div class="card-body">
                                 <div class="row">
                                     <div class="col">
-                                        {% csrf_token %}
-                                        <div class="input-group">
-                                        {{ form.body }}
-                                        </div>
-                                        <button type="submit" class="btn btn-primary mt-2">Submit</button>
+                                        <p><strong>Status:</strong></p>
+                                        <p><strong>Created By:</strong></p>
+                                        <p><strong>Priority:</strong></p>
+                                        <p><strong>Date Opened:</strong></p>
+                                        <p><strong>Date Closed:</strong></p>
+                                    </div>
+                                    <div class="col-9">
+                                        {% if ticket.status == "OPEN" %}
+                                        <p><span class="badge bg-green">{{ ticket.status }}</span></p>
+                                        {% else %}
+                                        <p><span class="badge bg-orange">{{ ticket.status }}</span></p>
+                                        {% endif %}
+                                        {% if ticket.owner.first_name %}
+                                        <p>{{ticket.owner.first_name }}</p>
+                                        {% else %}
+                                        <p>{{ticket.owner }}</p>
+                                        {% endif %}
+                                        {% if ticket.priority == 1 %}
+                                        <p><span class="badge bg-green">{{ ticket.get_priority_display }}</span></p>
+                                        {% elif ticket.priority == 2 %}
+                                        <p><span class="badge bg-blue">{{ ticket.get_priority_display }}</span></p>
+                                        {% else %}
+                                        <p><span class="badge bg-orange">{{ ticket.get_priority_display }}</span></p>
+                                        {% endif %}
+                                        <p>{{ticket.creation_date}}</p>
+                                        <p>{{ticket.closed_date}}</p>
                                     </div>
                                 </div>
-                            </form>
+                            </div>
                         </div>
-                        {% endif %}
                     </div>
                 </div>
                 
-                <div class="col-12 col-md-5 order-1 order-md-2">
-                    <div class="card">
-                        <div class="card-header d-flex flex-row align-items-center gap-2">
-                            <p class="m-0 p-0">Ticket Details</p>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col">
-                                    <p><strong>Status:</strong></p>
-                                    <p><strong>Created By:</strong></p>
-                                    <p><strong>Priority:</strong></p>
-                                    <p><strong>Date Opened:</strong></p>
-                                    <p><strong>Date Closed:</strong></p>
-                                </div>
-                                <div class="col-9">
-                                    {% if ticket.status == "OPEN" %}
-                                    <p><span class="badge bg-green">{{ ticket.status }}</span></p>
-                                    {% else %}
-                                    <p><span class="badge bg-orange">{{ ticket.status }}</span></p>
-                                    {% endif %}
-                                    {% if ticket.owner.first_name %}
-                                    <p>{{ticket.owner.first_name }}</p>
-                                    {% else %}
-                                    <p>{{ticket.owner }}</p>
-                                    {% endif %}
-                                    {% if ticket.priority == 1 %}
-                                    <p><span class="badge bg-green">{{ ticket.get_priority_display }}</span></p>
-                                    {% elif ticket.priority == 2 %}
-                                    <p><span class="badge bg-blue">{{ ticket.get_priority_display }}</span></p>
-                                    {% else %}
-                                    <p><span class="badge bg-orange">{{ ticket.get_priority_display }}</span></p>
-                                    {% endif %}
-                                    <p>{{ticket.creation_date}}</p>
-                                    <p>{{ticket.closed_date}}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
+            
 
             <!-- Comements / Details End -->
-
         </div>
     </div>
 </div>
