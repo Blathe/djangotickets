@@ -112,7 +112,8 @@
                                                         <i class="bi bi-person-circle fs-1"></i>
                                                     </div>
                                                     <div class="col">
-                                                        <small class="m-0 p-0">{{comment.creation_date}} 
+                                                        {% load tz %}
+                                                        <small class="m-0 p-0">{{comment.creation_date }} 
                                                             {% if comment.tag == 'CLOSED' %} 
                                                             <span class="badge bg-orange text-danger-emphasis">Ticket Closed<span>
                                                             {% elif comment.tag == 'REOPENED' %}

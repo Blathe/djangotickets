@@ -78,7 +78,7 @@
                     <a class="text-decoration-none" href="/?filters=OPEN">
                         <div class="card bg-blue text-light">
                             <div class="card-body text-center">
-                            <p class="card-text">{% if open_tickets %}{{open_tickets.count}}{% else %}0{%endif%}</p>
+                            <h1 class="card-text">{% if open_tickets %}{{open_tickets.count}}{% else %}0{%endif%}</h1>
                             <h5 class="card-title">Open Tickets</h5>
                             </div>
                         </div>       
@@ -88,7 +88,7 @@
                     <a class="text-decoration-none" href="/?filters=CLOSED">
                         <div class="card bg-green text-light">
                             <div class="card-body text-center">
-                            <p class="card-text">{% if closed_tickets %}{{closed_tickets.count}}{% else %}0{%endif%}</p>
+                            <h1 class="card-text">{% if closed_tickets %}{{closed_tickets.count}}{% else %}0{%endif%}</h1>
                             <h5 class="card-title">Closed Tickets</h5>
                             </div>
                         </div>
@@ -98,7 +98,7 @@
                     <a class="text-decoration-none" href="/">
                         <div class="card bg-purple text-light">
                             <div class="card-body text-center">
-                            <p class="card-text">{% if page_obj %}{{total_tickets}}{% else %}0{%endif%}</p>
+                            <h1 class="card-text">{% if page_obj %}{{total_tickets}}{% else %}0{%endif%}</h1>
                             <h5 class="card-title">All Tickets</h5>
                             </div>
                         </div>
@@ -108,7 +108,7 @@
                     <a class="text-decoration-none" href="/?my_tickets=true">
                         <div class="card bg-orange text-light">
                             <div class="card-body text-center">
-                            <p class="card-text">{% if your_tickets %}{{your_tickets.count}}{% else %}0{%endif%}</p>
+                            <h1 class="card-text">{% if your_tickets %}{{your_tickets.count}}{% else %}0{%endif%}</h1>
                             <h5 class="card-title">Your Tickets</h5>
                             </div>
                         </div>
