@@ -78,7 +78,7 @@
                     <a class="text-decoration-none" href="/?filters=OPEN">
                         <div class="card bg-blue text-light">
                             <div class="card-body text-center">
-                            <p class="card-text">{% if open_tickets %}{{open_tickets.count}}{%endif%}</p>
+                            <p class="card-text">{% if open_tickets %}{{open_tickets.count}}{% else %}0{%endif%}</p>
                             <h5 class="card-title">Open Tickets</h5>
                             </div>
                         </div>       
@@ -88,7 +88,7 @@
                     <a class="text-decoration-none" href="/?filters=CLOSED">
                         <div class="card bg-green text-light">
                             <div class="card-body text-center">
-                            <p class="card-text">{% if closed_tickets %}{{closed_tickets.count}}{%endif%}</p>
+                            <p class="card-text">{% if closed_tickets %}{{closed_tickets.count}}{% else %}0{%endif%}</p>
                             <h5 class="card-title">Closed Tickets</h5>
                             </div>
                         </div>
@@ -98,7 +98,7 @@
                     <a class="text-decoration-none" href="/">
                         <div class="card bg-purple text-light">
                             <div class="card-body text-center">
-                            <p class="card-text">{% if page_obj %}{{total_tickets}}{%endif%}</p>
+                            <p class="card-text">{% if page_obj %}{{total_tickets}}{% else %}0{%endif%}</p>
                             <h5 class="card-title">All Tickets</h5>
                             </div>
                         </div>
@@ -108,7 +108,7 @@
                     <a class="text-decoration-none" href="/?my_tickets=true">
                         <div class="card bg-orange text-light">
                             <div class="card-body text-center">
-                            <p class="card-text">{% if your_tickets %}{{your_tickets.count}}{%endif%}</p>
+                            <p class="card-text">{% if your_tickets %}{{your_tickets.count}}{% else %}0{%endif%}</p>
                             <h5 class="card-title">Your Tickets</h5>
                             </div>
                         </div>
@@ -171,6 +171,7 @@
                                             <th scope="col">Owner</th>
                                             <th scope="col">Created On</th>
                                             <th scope="col"></th>
+                                            <th scope="col"></th>
                                         </tr>
                                         {% for ticket in page_obj %}
                                         <tr>
@@ -198,9 +199,20 @@
                                                 <small>{{ ticket.creation_date | utc | date }}</small>
                                             </td>
                                             <td>
+                                                <i class="bi bi-chat-dots fs-5 position-relative">
+                                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-blue">
+                                                        <small style="font-size: 14px;">{{ ticket.get_comments.count }}</small>
+                                                        <span class="visually-hidden">comment count</span>
+                                                </i>
+                                            </td>
+                                            <td>
                                                 <button type="button" class="btn btn-white border-0 outline-0" data-bs-toggle="dropdown" aria-expanded="false">
                                                     <i class="bi bi-three-dots"></i>
                                                 </button>
+                                                <ul class="dropdown-menu" aria-labelledby="dropdown">
+                                                    <li><a class="dropdown-item" href="{% url 'details' ticket.id %}">Details</a></li>
+                                                    <li><form method="POST" action="{% url 'delete' ticket.id %}">{% csrf_token %}<input class="btn btn-link text-danger text-decoration-none" type="submit" onclick="return confirm('Are you sure you want to delete this ticket?')" value="Delete Ticket" /></form></li>
+                                                  </ul>
                                                 
                                             </td>
                                         </tr>

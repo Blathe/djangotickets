@@ -5,6 +5,13 @@ var sortSelectionBox = document.getElementById('sort-select-box');
 var resultsPerPageSelect = document.getElementById('results-per-page-select');
 
 
+var deleteTicketButton = document.getElementById("delete-ticket-button");
+deleteTicketButton.addEventListener("click", deleteTicket);
+
+function deleteTicket() {
+    alert("Hello World");
+}
+
 setupSessions()
 
 //Set up our session storage information for filters and sorting (checkboxes, drop downs, etc.) so they persist through refreshes.

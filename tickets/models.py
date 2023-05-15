@@ -24,7 +24,11 @@ class Ticket(models.Model):
 
     def __str__(self):
         return f"{self.title} - Priority: {self.priority}"
-
+    
+    def get_comments(self):
+        comments = Comment.objects.all()
+        return comments.filter(ticket=self.id)
+    
 class Comment(models.Model):
     TAG_CHOICES = (
         ('DEFAULT', 'Default'),

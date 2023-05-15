@@ -152,7 +152,8 @@ def open(request, pk):
             comment.tag = 'REOPENED' #set tag to reopened to display a badge next to the comment
             form = CommentForm(request.POST)
             if form.is_valid():
-                form.save()
+                comment.body = form.cleaned_data['body']
+                comment.save()
                 messages.add_message(request, messages.SUCCESS, 'You have successfully reopened ticket #{id}'.format(id = ticket.id))
                 return HttpResponseRedirect('/tickets/details/{id}'.format(id = pk))
             else:
@@ -161,7 +162,7 @@ def open(request, pk):
         else:
             return HttpResponseRedirect('/tickets/details/{id}'.format(id = pk))
 
-#/tickets/close/{id}
+#/tickets/close/{id} 
 @login_required
 def close(request, pk):
     if request.method == "POST":
@@ -175,7 +176,8 @@ def close(request, pk):
             comment.tag = 'CLOSED' #set tag to closed to display a badge next to the comment.
             form = CommentForm(request.POST)
             if form.is_valid():
-                form.save()
+                comment.body = form.cleaned_data['body']
+                comment.save()
                 messages.add_message(request, messages.SUCCESS, 'You have successfully closed ticket {id}'.format(id = ticket.id))
                 return HttpResponseRedirect('/tickets/details/{id}'.format(id = pk))
             else:
