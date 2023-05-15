@@ -5,6 +5,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from django.core.paginator import Paginator
 
+from django.db.models import Q
+
 from .forms import TicketForm, CommentForm
 
 from .models import Ticket, Comment
@@ -25,15 +27,17 @@ def index(request):
             
             if request.GET.get('search') is not None:
                 query = request.GET.get('search')
+                                
                 #double check to make sure the query exists
                 if (query is not None):
-                    #check if the query is only a digit (int), if not throw the user a message and load all tickets.
-                    if (query.isdigit() is not True):
-                        messages.add_message(request, messages.WARNING, 'Enter a valid ticket number and try again (numbers only).')
-                        return HttpResponseRedirect('/')
                     
+                    #Q tags define what fields we are searching in the Ticket model
+                    search = Ticket.objects.filter(
+                        Q(title__icontains=query) | Q(description__icontains=query) | Q(owner__first_name__icontains=query) | Q(owner__username__icontains=query)
+                    )
+
                     #grab all tickets and filter to grab any with a ticket number that matches the query
-                    filtered_tickets = all_tickets.filter(id = query)
+                    filtered_tickets = search
                     
                     if (request.GET.get('per_page')):
                         paginator = Paginator(filtered_tickets, request.GET.get('per_page'))
