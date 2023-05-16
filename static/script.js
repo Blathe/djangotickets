@@ -7,22 +7,11 @@ var resultsPerPageSelect = document.getElementById('results-per-page-select');
 
 setupSessions()
 
-//Set up our session storage information for filters and sorting (checkboxes, drop downs, etc.) so they persist through refreshes.
+//Grab our session data and populate anything that needs to be populated.
 function setupSessions() {
-    //hideClosedFilterCheckbox.checked = sessionStorage.getItem('hideClosedChecked');
-    //sortSelectionBox.value = sessionStorage.getItem('sortSelection');
     if (localStorage.getItem('results-per-page') != null) {
         resultsPerPageSelect.value = localStorage.getItem('results-per-page');
     }
-    /*if (urlParams.has('filters')) {
-        hideClosedFilterCheckbox.checked = sessionStorage.getItem('hideClosedChecked');
-    }
-    if (urlParams.has('sort')) {
-        sortSelectionBox.value = sessionStorage.getItem('sortSelection');
-    }
-    if (urlParams.has('per_page')){
-        resultsPerPageSelect.value = sessionStorage.getItem('results-per-page');
-    }*/
 }
 
 function updateResults() {
@@ -52,7 +41,6 @@ function handleHideClosedTickets(checkbox) {
 }
 
 function handleSearch() {
-    console.log('handle search');
     var query = document.getElementById('search-box').value;
     if (query != "") {
         urlParams.set('search', query)
@@ -62,7 +50,7 @@ function handleSearch() {
 
 //Code thanks to PotatoParser
 //https://stackoverflow.com/questions/63515279/how-to-initialize-toasts-with-javascript-in-bootstrap-5
-//TODO: Customize this a bit more so that we can use toasts for other things, right now they are only use for alerts
+//TODO: Customize this a bit more so that we can use toasts for other things, right now they are only used for alerts
 window.onload = (event) => {
     var toastElList = [].slice.call(document.querySelectorAll('.toast'))
     var toastList = toastElList.map(function(toastEl) {
