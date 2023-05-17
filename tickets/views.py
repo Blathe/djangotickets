@@ -47,9 +47,9 @@ def index(request):
                     page_number = request.GET.get('page')
                     page_obj = paginator.get_page(page_number)
 
-                    #if the filtered ticket count is 0, send a warning message that the ticket wasn't found and load all tickets.
+                    #if the filtered ticket count is 0, send a warning message that no results were found.
                     if (filtered_tickets.count() == 0):
-                        messages.add_message(request, messages.WARNING, 'No ticket found with id: {search}.'.format(search=query))                    
+                        messages.add_message(request, messages.WARNING, 'No results found.')                    
 
                     return render(request, 'tickets/index.html', {'page_obj': page_obj, 'search_results': page_obj.paginator.count, 'open_tickets': open_tickets, 'closed_tickets' : closed_tickets, 'your_tickets' : your_tickets, 'total_tickets' : total_ticket_count})
             else:
