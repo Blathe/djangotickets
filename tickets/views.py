@@ -33,7 +33,7 @@ def index(request):
                     
                     #Q tags define what fields we are searching in the Ticket model
                     search = Ticket.objects.filter(
-                        Q(title__icontains=query) | Q(description__icontains=query) | Q(owner__first_name__icontains=query) | Q(owner__username__icontains=query)
+                       Q(id__contains=query) | Q(title__icontains=query) | Q(description__icontains=query) | Q(owner__first_name__icontains=query) | Q(owner__username__icontains=query)
                     )
 
                     #grab all tickets and filter to grab any with a ticket number that matches the query
