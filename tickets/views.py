@@ -12,9 +12,9 @@ from .forms import TicketForm, CommentForm
 from .models import Ticket, Comment
 
 
-#
-# index page
-#
+'''
+This function handles all functionality for the ticket dashboard including Searches and Pagination.
+'''
 def index(request):
     if request.method == "GET":
         if request.user.is_authenticated:
@@ -52,34 +52,12 @@ def index(request):
                         messages.add_message(request, messages.WARNING, 'No results found.')                    
 
                     return render(request, 'tickets/index.html', {'page_obj': page_obj, 'search_results': page_obj.paginator.count, 'open_tickets': open_tickets, 'closed_tickets' : closed_tickets, 'your_tickets' : your_tickets, 'total_tickets' : total_ticket_count})
-            else:
-                if request.GET.get('filters') is not None or request.GET.get('sort') is not None:
-                    filters = request.GET.get('filters')
-                    sort = request.GET.get('sort')
-                    
-                    if (filters is not None):
-                            all_tickets = all_tickets.filter(status = request.GET.get('filters'))
-                    if (sort is not None):
-                        if (sort == "default"):
-                            all_tickets = all_tickets.order_by("creation_date")
-                        else:
-                            all_tickets = all_tickets.order_by(sort)
-
-                    if (request.GET.get('per_page')):
-                        paginator = Paginator(all_tickets, request.GET.get('per_page'))
-                    else:
-                        paginator = Paginator(all_tickets, 10)
-
-                    page_number = request.GET.get('page')
-                    page_obj = paginator.get_page(page_number)
+            else:    
+                if request.GET.get('my_tickets') is not None:
+                    if request.GET.get('my_tickets') == "true":
+                        all_tickets = your_tickets
                         
-                    return render(request, 'tickets/index.html', {'page_obj': page_obj, 'search_results': page_obj.paginator.count, 'open_tickets': open_tickets, 'closed_tickets' : closed_tickets, 'your_tickets' : your_tickets, 'total_tickets' : total_ticket_count})
-                else:    
-                    if request.GET.get('my_tickets') is not None:
-                        if request.GET.get('my_tickets') == "true":
-                            all_tickets = your_tickets
-                            
-                    all_tickets.order_by('creation_date')
+                all_tickets.order_by('creation_date')
 
                 if (request.GET.get('per_page')):
                     paginator = Paginator(all_tickets, request.GET.get('per_page'))
@@ -94,6 +72,9 @@ def index(request):
             return HttpResponseRedirect('/login')
     return render(request, 'tickets/index.html')       
 
+'''
+This function handles our custom login logic.
+'''
 def user_login(request):
     if request.method == "POST":
         username = request.POST['username']
@@ -111,8 +92,11 @@ def user_login(request):
         else:
             return render(request, 'tickets/login.html')
         
-#ticket details page
-#/tickets/details/{id}
+'''
+This function fetches a single ticket and returns ticket details and the details.html page.
+
+/tickets/details/{id}
+'''
 @login_required
 def details(request, pk):
     if request.method == "GET":
@@ -127,7 +111,11 @@ def details(request, pk):
             return render(request, 'tickets/details.html', {'ticket':ticket, 'comments':comments, 'form': form})
         return render(request, 'tickets/index.html')
 
-#/tickets/create/
+'''
+This function handles creating a new ticket.
+
+/tickets/create/
+'''
 @login_required
 def create(request):
     if request.method == "POST":
@@ -143,6 +131,11 @@ def create(request):
             return HttpResponseRedirect('/')
     return HttpResponseRedirect('/')
 
+'''
+This function handles reopening a closed ticket.
+
+/tickets/open/{id}
+'''
 @login_required
 def open(request, pk):
     if request.method == "POST":
@@ -153,7 +146,7 @@ def open(request, pk):
             comment = Comment()
             comment.owner = request.user
             comment.ticket = ticket
-            comment.tag = 'REOPENED' #set tag to reopened to display a badge next to the comment
+            comment.tag = 'REOPENED' #set the tag to REOPENED so a badge is displayed next to the comment on the frontend.
             form = CommentForm(request.POST)
             if form.is_valid():
                 comment.body = form.cleaned_data['body']
@@ -166,7 +159,11 @@ def open(request, pk):
         else:
             return HttpResponseRedirect('/tickets/details/{id}'.format(id = pk))
 
-#/tickets/close/{id} 
+'''
+This function handles setting a ticket's status to Closed.
+
+/tickets/close/{id}
+'''
 @login_required
 def close(request, pk):
     if request.method == "POST":
@@ -177,7 +174,7 @@ def close(request, pk):
             comment = Comment()
             comment.owner = request.user
             comment.ticket = ticket
-            comment.tag = 'CLOSED' #set tag to closed to display a badge next to the comment.
+            comment.tag = 'CLOSED' #set the tag to CLOSED so a badge is displayed next to the comment on the frontend.
             form = CommentForm(request.POST)
             if form.is_valid():
                 comment.body = form.cleaned_data['body']
@@ -187,10 +184,15 @@ def close(request, pk):
             else:
                 return HttpResponseRedirect('/tickets/details/{id}'.format(id = pk))
         else:
-            messages.add_message(request, messages.INFO, 'Error closing ticket - You cannot close a ticket owned by someone else.')
+            messages.add_message(request, messages.INFO, 'Error closing ticket - you are not authorized to close a ticket.')
             return HttpResponseRedirect('/tickets/details/{id}'.format(id = pk))
     return HttpResponseRedirect('/')
 
+'''
+This function handles creating a new comment on a ticket.
+
+/tickets/comment/{id}
+'''
 @login_required
 def comment(request, pk):
     if request.method == "POST":
@@ -213,6 +215,11 @@ def comment(request, pk):
                 return HttpResponseRedirect('/tickets/details/{id}'.format(id = pk))
     return HttpResponseRedirect('/')
 
+'''
+This function handles deleting a ticket.
+
+/tickets/delete/{id}
+'''
 @login_required
 def delete(request, pk):
     if request.user.is_authenticated:
