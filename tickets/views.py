@@ -52,7 +52,30 @@ def index(request):
                         messages.add_message(request, messages.WARNING, 'No results found.')                    
 
                     return render(request, 'tickets/index.html', {'page_obj': page_obj, 'search_results': page_obj.paginator.count, 'open_tickets': open_tickets, 'closed_tickets' : closed_tickets, 'your_tickets' : your_tickets, 'total_tickets' : total_ticket_count})
-            else:    
+                
+            else:
+                if request.GET.get('filters') is not None or request.GET.get('sort') is not None:
+                    filters = request.GET.get('filters')
+                    sort = request.GET.get('sort')
+                    
+                    if (filters is not None):
+                            all_tickets = all_tickets.filter(status = request.GET.get('filters'))
+                    if (sort is not None):
+                        if (sort == "default"):
+                            all_tickets = all_tickets.order_by("creation_date")
+                        else:
+                            all_tickets = all_tickets.order_by(sort)
+
+                    if (request.GET.get('per_page')):
+                        paginator = Paginator(all_tickets, request.GET.get('per_page'))
+                    else:
+                        paginator = Paginator(all_tickets, 10)
+
+                    page_number = request.GET.get('page')
+                    page_obj = paginator.get_page(page_number)
+                        
+                    return render(request, 'tickets/index.html', {'page_obj': page_obj, 'search_results': page_obj.paginator.count, 'open_tickets': open_tickets, 'closed_tickets' : closed_tickets, 'your_tickets' : your_tickets, 'total_tickets' : total_ticket_count})
+                    
                 if request.GET.get('my_tickets') is not None:
                     if request.GET.get('my_tickets') == "true":
                         all_tickets = your_tickets
