@@ -22,12 +22,17 @@ class Ticket(models.Model):
     status = models.CharField(choices=STATUS_CHOICES, max_length=20, default="OPEN")
     priority = models.PositiveIntegerField(choices=PRIORITY_CHOICES, default=2)
 
+    ''' Adjusting the __str__ will give our model a name in the Django admin '''
     def __str__(self):
         return f"{self.title} - Priority: {self.priority}"
     
     def get_comments(self):
         comments = Comment.objects.all()
         return comments.filter(ticket=self.id)
+
+    def change_priority(self, priority):
+        self.priority = priority
+        self.save
     
 class Comment(models.Model):
     TAG_CHOICES = (
@@ -41,5 +46,6 @@ class Comment(models.Model):
     body = models.CharField(max_length=400)
     tag = models.CharField(choices=TAG_CHOICES, max_length=20, default="DEFAULT")
     
+    ''' Adjusting the __str__ will give our model a name in the Django admin'''
     def __str__(self):
         return f"{self.id} - Owner: {self.owner} | Ticket: {self.ticket.id} -- {self.body}"
