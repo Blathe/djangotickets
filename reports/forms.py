@@ -5,6 +5,7 @@ from django.forms import ModelChoiceField
 
 class UserChoiceField(ModelChoiceField):
 
+    # this function is needed to format the first + last name in a User Choice Field
     def label_from_instance(self, obj):
         return f'{obj.first_name} {obj.last_name}'
     
@@ -27,7 +28,8 @@ class ReportGenerationForm(forms.Form):
         ('PRIORITY', 'Priority')
     )
       
-    ### Define our form fields ###
+    #Define our form fields
+    #name is an optional field
     name = forms.CharField(max_length=120, required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
     user = UserChoiceField(queryset=User.objects.all(), empty_label="Any", required=False, label="Ticket Owner",
     widget=forms.Select(attrs={'class': 'form-select'}))

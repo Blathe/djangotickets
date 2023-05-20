@@ -12,7 +12,8 @@ class TicketTestCase(TestCase):
         self.assertEqual(self.user.username, "test_user")
         
     def test_create_ticket_without_being_authenticated(self):
-        """This should pass if a user gets a 302 status before logging in, and a 200 status code after logging in and posting a ticket.
+        """This test should pass if a user receives a response status code of 302 before being authenticated when trying to create a ticket
+        and a status of 200 after being authenticated when trying to create another ticket.
         """
         ticket = {
             "title":"Test",

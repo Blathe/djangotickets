@@ -18,12 +18,12 @@ This function handles all functionality for the ticket dashboard including Searc
 def index(request):
     if request.method == "GET":
         if request.user.is_authenticated:
-            # This should probably be done differently on a larger product with more data but it will work for now.
+            # This would probably be done differently on a larger product with more data but it will work for now.
             all_tickets = Ticket.objects.all()
             open_tickets = all_tickets.filter(status = "OPEN")
             closed_tickets = all_tickets.filter(status = "CLOSED")
             your_tickets = all_tickets.filter(owner = request.user)
-            total_ticket_count = all_tickets.count
+            total_ticket_count = all_tickets.count()
             
             if request.GET.get('search') is not None:
                 query = request.GET.get('search')
