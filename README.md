@@ -1,11 +1,13 @@
 # djangotickets
-A simple ticket manager made with Django, Bootstrap, and a Postgresql database.
+A simple ticket manager made with Django, Bootstrap, and a PostgreSQL database.
 
 By no means does this include best practices, but it gets a simple project started.
 
-![Alt Text](https://i.postimg.cc/6qpVZGkD/Screenshot-2023-04-11-204628.jpg)
+![Alt Text](https://i.ibb.co/3cHwy6q/Django-Tickets-Dashboard.jpg)
 
-![Alt Text](https://i.postimg.cc/x8pv31Yq/Screenshot-2023-04-11-204722.jpg)
+![Alt Text](https://i.ibb.co/5M7Sxkx/Django-Tickets-Details.jpg)
+
+![Alt Text](https://i.ibb.co/fMfPdrF/Django-Tickets-Report-Generation.jpg)
 
 
 # Base Functionality
@@ -16,14 +18,10 @@ By no means does this include best practices, but it gets a simple project start
 - Closing / Deleting tickets
 - Reopening Tickets
 - Basic sorting/filtering tickets
-- Searching by Ticket ID (pretty basic)
-- Fairly easy Heroku deployment (you might need to change some settings)
-
-# Planned Features
-
-- Reporting functionality
-- More search functionality (by ticket creator, ticket name, etc.)
-- Separating the templates into partial renders.
+- Searching Tickets
+- Report Generation
+- Report Exporting (to CSV)
+- Heroku Deployment
 
 # Installation
 
